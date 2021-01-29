@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+    id 'antlr'
+}
+
+group 'org.lkop'
+version '0.1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    //compile 'org.antlr:antlr4-runtime:4.9.1'
+    compile 'org.antlr:antlr4-runtime:4.7.1'
+    antlr "org.antlr:antlr4:4.7.1"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+generateGrammarSource {
+    copy {
+        from "src/main/java/org/lkop/MINIC2C/lexerparser"
+        into new File("src/main/antlr")
+    }
+    outputDirectory = new File("src/main/java/org/lkop/MINIC2C/lexerparsergenerated")
+    arguments += ["-visitor"]
+    doLast {
+        delete "src/main/antlr"
+    }
+}
+
+clean {
+    delete "src/main/java/org/lkop/MINIC2C/lexerparsergenerated"
+    delete "src/main/antlr"
+}
