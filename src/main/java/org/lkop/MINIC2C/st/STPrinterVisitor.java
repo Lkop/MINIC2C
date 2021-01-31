@@ -1,4 +1,4 @@
-package org.lkop.MINIC2C;
+package org.lkop.MINIC2C.st;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.lkop.MINIC2C.lexerparsergenerated.MINICLexer;
