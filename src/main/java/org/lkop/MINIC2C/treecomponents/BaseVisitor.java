@@ -1,24 +1,22 @@
-package org.lkop.MINIC2C;
+package org.lkop.MINIC2C.treecomponents;
 
-import org.lkop.MINIC2C.treecomponents.BaseTreeElement;
+public abstract class BaseVisitor<T> implements TreeVisitor {
 
-public abstract class ASTBaseVisitor<T> implements TreeVisitor {
-
-    private ASTElement parent = null;
+    private BaseTreeElement parent = null;
 
     @Override
-    public T visit(ASTVisitableElement node) {
+    public T visit(VisitableBaseTreeElement node) {
         return (T) node.accept(this);
     }
 
-    public T visitChildren(ASTElement node) {
-        ASTElement oldParent= parent;
+    public T visitChildren(BaseTreeElement node) {
+        BaseTreeElement oldParent= parent;
         parent = node;
         T netResult = null;
 
         if (node.getChildren() != null) {
             for (BaseTreeElement child : node.getChildren()) {
-                ASTVisitableElement element = (ASTVisitableElement) child;
+                VisitableBaseTreeElement element = (VisitableBaseTreeElement) child;
                 netResult = (T) element.accept(this);
             }
             parent = oldParent;

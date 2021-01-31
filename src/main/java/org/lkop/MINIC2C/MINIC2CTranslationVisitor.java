@@ -26,7 +26,7 @@ public class MINIC2CTranslationVisitor extends ASTVisitor{
         parents.push(new_node);
         parents_ctx.push(CodeFile.CC_FILE_FUNDEF);
         for (ASTElement elem : node.getChildrenInContext(CCompileUnit.CT_COMPILEUNIT_STATEMENTS)) {
-            super.visit((ASTVisitableElement)elem);
+            super.visit(elem);
         }
         parents_ctx.pop();
         parents.pop();
@@ -45,7 +45,7 @@ public class MINIC2CTranslationVisitor extends ASTVisitor{
         parents.push(new_node);
         parents_ctx.push(CodeIfStatement.CB_IF_STATEMENT_CONDITION);
         for (ASTElement elem : node.getChildrenInContext(CIf.CT_IF_EXPRESSION)) {
-            super.visit((ASTVisitableElement)elem);
+            super.visit(elem);
         }
         parents_ctx.pop();
         parents.pop();
@@ -55,7 +55,7 @@ public class MINIC2CTranslationVisitor extends ASTVisitor{
         parents.push(new_node);
         parents_ctx.push(CodeIfStatement.CB_IF_STATEMENT_BODY);
         for (ASTElement elem : node.getChildrenInContext(CIf.CT_IF_STATEMENT)) {
-            super.visit((ASTVisitableElement)elem);
+            super.visit(elem);
         }
         parents_ctx.pop();
         parents.pop();
@@ -77,7 +77,7 @@ public class MINIC2CTranslationVisitor extends ASTVisitor{
 
         parents.push(new_node);
         for (ASTElement elem : node.getChildrenInContext(CAssignment.CT_LEFT)) {
-            super.visit((ASTVisitableElement)elem);
+            super.visit(elem);
         }
         parents.pop();
 
@@ -85,7 +85,7 @@ public class MINIC2CTranslationVisitor extends ASTVisitor{
 
         parents.push(new_node);
         for (ASTElement elem : node.getChildrenInContext(CAssignment.CT_RIGHT)) {
-            super.visit((ASTVisitableElement)elem);
+            super.visit(elem);
         }
         parents.pop();
 

@@ -1,70 +1,21 @@
 package org.lkop.MINIC2C;
 
 import org.lkop.MINIC2C.treecomponents.BaseTreeElement;
-import org.lkop.MINIC2C.treecomponents.Visitable;
+import org.lkop.MINIC2C.treecomponents.BaseVisitor;
+import org.lkop.MINIC2C.treecomponents.VisitableBaseTreeElement;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class ASTElement extends BaseTreeElement {
+public class ASTElement extends ContextedElement<ASTElement> {
     private NodeType node_type;
     private String name;
-    private int context;
 
     public ASTElement(NodeType node_type, String name, int context) {
+        super(context);
         this.node_type = node_type;
         this.name = name;
-
-        if(context != -1) {
-            this.context = context;
-        }
-    }
-
-    @Override
-    public ASTElement getChild(int context) {
-        for (BaseTreeElement elem : super.getChildren() ){
-            ASTElement cast_elem = (ASTElement)elem;
-            if (cast_elem.context == context) {
-                return cast_elem;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public ASTElement getParent(int pos) {
-        return (ASTElement)super.getParent(pos);
-    }
-
-    public List<ASTElement> getChildrenInContext(int context) {
-        List<ASTElement> list = new ArrayList<>();
-
-        for (BaseTreeElement elem : super.getChildren() ){
-            ASTElement cast_elem = (ASTElement)elem;
-            if (cast_elem.context == context) {
-                list.add(cast_elem);
-            }
-        }
-        return list;
-    }
-
-    public List<ASTElement> getChildrenInContext(int context, int pos) {
-        List<ASTElement> list = new ArrayList<>();
-
-        int i=0;
-        for (BaseTreeElement elem : super.getChildren() ){
-            ASTElement cast_elem = (ASTElement)elem;
-            if (cast_elem.context == context && i >= pos) {
-                list.add(cast_elem);
-                i++;
-            }
-        }
-        return list;
-    }
-
-    public int getContext() {
-        return context;
     }
 
     public String getName() {
@@ -74,16 +25,29 @@ public class ASTElement extends BaseTreeElement {
     public String getGraphvizName(){
         return name+"_"+getSerialId();
     }
-}
 
-abstract class ASTVisitableElement extends ASTElement implements Visitable {
+    @Override
+    public ASTElement getChild(int context) {
+        return (ASTElement)super.getChild(context);
+    }
 
-    public ASTVisitableElement(NodeType node_type, String name, int context) {
-        super(node_type, name, context);
+    @Override
+    public ASTElement getParent(int pos) {
+        return (ASTElement)super.getParent(pos);
+    }
+
+    @Override
+    public List<ASTElement> getChildrenInContext(int context) {
+        return super.getChildrenInContext(context);
+    }
+
+    @Override
+    public List<ASTElement> getChildrenInContext(int context, int pos) {
+        return super.getChildrenInContext(context, pos);
     }
 }
 
-class CCompileUnit extends ASTVisitableElement {
+class CCompileUnit extends ASTElement {
     public static final int CT_COMPILEUNIT_STATEMENTS = 0, CT_COMPILEUNIT_FUNDEFS = 1;
     public static String[] context_names = {
         "STATEMENTSCONTEXT", "FUNCTIONDEFINITIONSCONTEXT"
@@ -94,7 +58,7 @@ class CCompileUnit extends ASTVisitableElement {
     }
 
     @Override
-    public <T> T accept(ASTBaseVisitor<? extends T> visitor) {
+    public <T> T accept(BaseVisitor<? extends T> visitor) {
         ASTVisitor v = (ASTVisitor)visitor;
         if (v != null) {
             return (T) v.visitCCompileUnit(this);
@@ -103,7 +67,7 @@ class CCompileUnit extends ASTVisitableElement {
     }
 }
 
-class CIf extends ASTVisitableElement {
+class CIf extends ASTElement {
     public static final int CT_IF_EXPRESSION = 0, CT_IF_STATEMENT = 1, CT_ELSE_STATEMENT = 2;
     public static final String[] context_names = {
         "IF_EXPRESSION_CONTEXT", "IF_STATEMENT_CONTEXT", "ELSE_STATEMENT_CONTEXT"
@@ -116,7 +80,7 @@ class CIf extends ASTVisitableElement {
     }
 
     @Override
-    public <T> T accept(ASTBaseVisitor<? extends T> visitor) {
+    public <T> T accept(BaseVisitor<? extends T> visitor) {
         ASTVisitor v = (ASTVisitor)visitor;
         if (v != null) {
             return (T) v.visitCIf(this);
@@ -125,7 +89,7 @@ class CIf extends ASTVisitableElement {
     }
 }
 
-class CAssignment extends ASTVisitableElement {
+class CAssignment extends ASTElement {
     public static final int CT_LEFT = 0, CT_RIGHT = 1;
     public static final String[] context_names = {
         "ASSIGNMENT_L", "ASSIGNMENT_R"
@@ -138,7 +102,7 @@ class CAssignment extends ASTVisitableElement {
     }
 
     @Override
-    public <T> T accept(ASTBaseVisitor<? extends T> visitor) {
+    public <T> T accept(BaseVisitor<? extends T> visitor) {
         ASTVisitor v = (ASTVisitor)visitor;
         if (v != null) {
             return (T) v.visitCAssignment(this);
@@ -147,7 +111,7 @@ class CAssignment extends ASTVisitableElement {
     }
 }
 
-class CIDENTIFIER extends ASTVisitableElement {
+class CIDENTIFIER extends ASTElement {
     private String value;
 
     public CIDENTIFIER(int context, String value) {
@@ -156,7 +120,7 @@ class CIDENTIFIER extends ASTVisitableElement {
     }
 
     @Override
-    public <T> T accept(ASTBaseVisitor<? extends T> visitor) {
+    public <T> T accept(BaseVisitor<? extends T> visitor) {
         ASTVisitor v = (ASTVisitor)visitor;
         if (v != null) {
             return (T) v.visitCIDENTIFIER(this);
@@ -169,7 +133,7 @@ class CIDENTIFIER extends ASTVisitableElement {
     }
 }
 
-class CNUMBER extends ASTVisitableElement {
+class CNUMBER extends ASTElement {
     private String value;
 
     public CNUMBER(int context, String value) {
@@ -178,7 +142,7 @@ class CNUMBER extends ASTVisitableElement {
     }
 
     @Override
-    public <T> T accept(ASTBaseVisitor<? extends T> visitor) {
+    public <T> T accept(BaseVisitor<? extends T> visitor) {
         ASTVisitor v = (ASTVisitor)visitor;
         if (v != null) {
             return (T) v.visitCNUMBER(this);

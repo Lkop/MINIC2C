@@ -1,6 +1,9 @@
 package org.lkop.MINIC2C;
 
-public abstract class ASTVisitor<T> extends ASTBaseVisitor<T> {
+import org.lkop.MINIC2C.treecomponents.BaseVisitor;
+
+
+public abstract class ASTVisitor<T> extends BaseVisitor<T> {
 
     public T visitCCompileUnit(CCompileUnit node) {
         return super.visitChildren(node);
