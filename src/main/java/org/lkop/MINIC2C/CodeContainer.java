@@ -7,9 +7,9 @@ import org.lkop.MINIC2C.treecomponents.VisitableBaseTreeElement;
 import java.util.List;
 
 public class CodeContainer extends ContextedElement<CodeContainer> {
+
     private CodeNodeType node_type;
     private String name;
-    private int context;
     //public StringBuilder code;
     public String code="";
 
@@ -61,7 +61,7 @@ public class CodeContainer extends ContextedElement<CodeContainer> {
 }
 
 class CodeFile extends CodeContainer {
-    public static final int CC_FILE_PREPROCESSOR = 0, CC_FILE_GLOBALS = 1, CC_FILE_FUNDEF = 2;
+    public static final int CC_FILE_PREPROCESSOR = 0, CC_FILE_GLOBALS = 1, CC_FILE_FUNCTIONDEFINITION = 2;
     public static final String[] context_names = {
         "PREPROCESSOR_CONTEXT" ,"GLOBALS_CONTEXT", "FUNDEFS_CONTEXT"
     };
@@ -92,10 +92,50 @@ class CodeFile extends CodeContainer {
     }
 }
 
-class CodeIfStatement extends CodeContainer {
-    public static final int CB_IF_STATEMENT_CONDITION = 0, CB_IF_STATEMENT_BODY = 1, CB_ELSE_STATEMENT_BODY = 2;
+class CodeExpressionStatement extends CodeContainer {
+    public static final int CB_EXPRESSION_BODY = 0;
     public static final String[] context_names = {
-        "IF_STATEMENT_CONDITION" ,"IF_STATEMENT_BODY", "ELSE_STATEMENT_BODY"
+        "EXPRESSION_BODY"
+    };
+
+    public CodeExpressionStatement(int context) {
+        super(CodeNodeType.CB_EXPRESSIONSTATEMENT, "CodeExpressionStatement", context);
+    }
+
+    @Override
+    public <T> T accept(BaseVisitor<? extends T> visitor) {
+        CodeVisitor v = (CodeVisitor)visitor;
+        if (v != null) {
+            return (T) v.visitCodeExpressionStatement(this);
+        }
+        return null;
+    }
+}
+
+class CodeCompoundStatement extends CodeContainer {
+    public static final int CB_COMPOUND_BODY = 0;
+    public static final String[] context_names = {
+        "CB_COMPOUND_BODY"
+    };
+
+    public CodeCompoundStatement(int context) {
+        super(CodeNodeType.CB_COMPOUNDSTATEMENT, "CodeCompoundStatement", context);
+    }
+
+    @Override
+    public <T> T accept(BaseVisitor<? extends T> visitor) {
+        CodeVisitor v = (CodeVisitor)visitor;
+        if (v != null) {
+            return (T) v.visitCodeCompoundStatement(this);
+        }
+        return null;
+    }
+}
+
+class CodeIfStatement extends CodeContainer {
+    public static final int CB_IF_CONDITION = 0, CB_IF_BODY = 1, CB_ELSE_BODY = 2;
+    public static final String[] context_names = {
+        "IF_CONDITION" ,"IF_BODY", "ELSE_BODY"
     };
 
     public CodeIfStatement(int context) {
@@ -113,21 +153,37 @@ class CodeIfStatement extends CodeContainer {
 }
 
 class CodeWhileStatement extends CodeContainer {
-    public static final int CB_IF_EXPRESSION = 0, CB_IF_STATEMENT = 1, CB_ELSE_STATEMENT = 2;
+    public static final int CB_WHILE_CONDITION = 0, CB_WHILE_BODY = 1;
     public static final String[] context_names = {
-        "IF_EXPRESSION" ,"IF_STATEMENT", "ELSE_STATEMENT"
+        "WHILE_CONDITION" ,"WHILE_BODY"
     };
 
     public CodeWhileStatement(int context) {
         super(CodeNodeType.CB_WHILESTATEMENT, "CodeWhileStatement", context);
     }
-}
 
-class CodeAssignment extends CodeContainer {
-
-    public CodeAssignment(int context) {
-        super(CodeNodeType.CB_CODEREPOSITORY, "CodeAssignment", context);
+    @Override
+    public <T> T accept(BaseVisitor<? extends T> visitor) {
+        CodeVisitor v = (CodeVisitor)visitor;
+        if (v != null) {
+            return (T) v.visitCodeWhileStatement(this);
+        }
+        return null;
     }
 }
 
+class CodeRepository extends CodeContainer {
 
+    public CodeRepository(int context) {
+        super(CodeNodeType.CB_CODEREPOSITORY, "CB_CODEREPOSITORY", context);
+    }
+
+    @Override
+    public <T> T accept(BaseVisitor<? extends T> visitor) {
+        CodeVisitor v = (CodeVisitor)visitor;
+        if (v != null) {
+            return (T) v.visitCodeRepository(this);
+        }
+        return null;
+    }
+}
