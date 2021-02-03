@@ -92,6 +92,45 @@ class CodeFile extends CodeContainer {
     }
 }
 
+class CodeFunctionDefinition extends CodeContainer {
+    public static final int CC_FUNCTIONDEFINITION_HEADER = 0, CC_FUNCTIONDEFINITION_BODY = 1;
+    public static final String[] context_names = {
+        "FUNCTIONDEFINITION_HEADER", "FUNCTIONDEFINITION_BODY"
+    };
+
+    public CodeFunctionDefinition(int context) {
+        super(CodeNodeType.CB_FUNCTIONDEFINITION, "CodeFunctionDefinition", context);
+    }
+
+    @Override
+    public <T> T accept(BaseVisitor<? extends T> visitor) {
+        CodeVisitor v = (CodeVisitor)visitor;
+        if (v != null) {
+            return (T) v.visitCodeFunctionDefinition(this);
+        }
+        return null;
+    }
+}
+
+class CodeMainFunctionDefinition extends CodeFunctionDefinition {
+
+    CodeCompoundStatement main_body;
+
+    public CodeMainFunctionDefinition(int context) {
+        super(context);
+        CodeRepository main_header = new CodeRepository(CodeFunctionDefinition.CC_FUNCTIONDEFINITION_HEADER);
+        main_header.addCode("void main(int argc, char* argv[])");
+        addChild(main_header);
+
+        main_body = new CodeCompoundStatement(CodeFunctionDefinition.CC_FUNCTIONDEFINITION_BODY);
+        addChild(main_body);
+    }
+
+    CodeCompoundStatement getMainBody(){
+        return main_body;
+    }
+}
+
 class CodeExpressionStatement extends CodeContainer {
     public static final int CB_EXPRESSION_BODY = 0;
     public static final String[] context_names = {

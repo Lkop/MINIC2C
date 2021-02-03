@@ -8,6 +8,10 @@ public class CodeVisitor<T> extends BaseVisitor<T> {
         return super.visitChildren(node);
     }
 
+    public T visitCodeFunctionDefinition(CodeFunctionDefinition node) {
+        return super.visitChildren(node);
+    }
+
     public T visitCodeExpressionStatement(CodeExpressionStatement node) {
         return super.visitChildren(node);
     }
