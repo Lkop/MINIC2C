@@ -18,19 +18,51 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
         code_file = new_node;
 
         //Creating empty containers
-        new_node.addChild(new CodeContainer(CodeNodeType.CB_CODEREPOSITORY, "Preprocessor", CodeFile.CC_FILE_PREPROCESSOR));
-        new_node.addPreprocessorCode("geiaaaa");
+        new_node.addChild(new CodeRepository(CodeFile.CC_FILE_PREPROCESSOR));
+        new_node.addPreprocessorCode("#include <stdio.h>\n");
+        new_node.addPreprocessorCode("#include <stdlib.h>\n");
 
-        new_node.addChild(new CodeContainer(CodeNodeType.CB_CODEREPOSITORY, "All_globals", CodeFile.CC_FILE_GLOBALS));
+        new_node.addChild(new CodeRepository(CodeFile.CC_FILE_GLOBALS));
 
-        parents.push(new_node);
-        parents_ctx.push(CodeFile.CC_FILE_FUNCTIONDEFINITION);
+
+        CodeMainFunctionDefinition fd = new CodeMainFunctionDefinition(CodeFile.CC_FILE_FUNCTIONDEFINITION);
+        new_node.addChild(fd);
+
+        parents.push(fd.getMainBody());
+        parents_ctx.push(CodeCompoundStatement.CB_COMPOUND_BODY);
         for (ASTElement elem : node.getChildrenInContext(CCompileUnit.CT_COMPILEUNIT_STATEMENTS)) {
             super.visit(elem);
         }
         parents_ctx.pop();
         parents.pop();
 
+        return 0;
+    }
+
+    @Override
+    public Integer visitCFunctionDefinition(CFuntionDefinition node) {
+        CodeContainer parent = parents.peek();
+
+        CodeFunctionDefinition new_node = new CodeFunctionDefinition(parents_ctx.peek());
+        parent.addChild(new_node);
+
+        parents.push(new_node);
+        parents_ctx.push(CodeFunctionDefinition.CC_FUNCTIONDEFINITION_HEADER);
+        for (ASTElement elem : node.getChildrenInContext(CFuntionDefinition.CT_NAME)) {
+            super.visit(elem);
+        }
+        parents_ctx.pop();
+        parents.pop();
+
+        parents.push(new_node);
+        parents_ctx.push(CodeFunctionDefinition.CC_FUNCTIONDEFINITION_BODY);
+        for (ASTElement elem : node.getChildrenInContext(CFuntionDefinition.CT_BODY)) {
+            super.visit(elem);
+        }
+        parents_ctx.pop();
+        parents.pop();
+
+        parent.addCode(new_node);
         return 0;
     }
 
@@ -125,6 +157,31 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
         parents.pop();
 
         parent.addCode(new_node);
+        return 0;
+    }
+
+    @Override
+    public Integer visitCAddition(CAddition node) {
+        //CodeRepository new_node = new CodeRepository(parents_ctx.peek());
+
+        CodeContainer parent = parents.peek();
+        //parent.addChild(new_node);
+
+        //parents.push(new_node);
+        for (ASTElement elem : node.getChildrenInContext(CAddition.CT_LEFT)) {
+            super.visit(elem);
+        }
+        //parents.pop();
+
+        parent.addCode("+");
+
+        //parents.push(new_node);
+        for (ASTElement elem : node.getChildrenInContext(CAddition.CT_RIGHT)) {
+            super.visit(elem);
+        }
+       //parents.pop();
+
+
         return 0;
     }
 
