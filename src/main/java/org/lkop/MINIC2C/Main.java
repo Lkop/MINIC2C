@@ -4,6 +4,8 @@ import org.lkop.MINIC2C.lexerparsergenerated.*;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
+import org.lkop.MINIC2C.st.STPrinterVisitor;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +38,11 @@ public class Main {
             CodeContainer r2 = c_gen.getRoot();
             System.out.println(r2.code.toString());
 
+            CFilePrinterVisitor cfp_vis = new CFilePrinterVisitor("file");
+            c_gen.getRoot().accept(cfp_vis);
+
+            CFileBuilderVisitor cfb_vis = new CFileBuilderVisitor("cfile");
+            c_gen.getRoot().accept(cfb_vis);
 
         }catch (IOException e) {
             System.out.println("File not found.");

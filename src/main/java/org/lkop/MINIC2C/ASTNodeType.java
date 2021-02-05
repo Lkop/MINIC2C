@@ -1,26 +1,27 @@
 package org.lkop.MINIC2C;
 
-public enum NodeType {
+public enum ASTNodeType {
         NT_NA,
         NT_COMPILEUNIT,
 
         NT_FUNCTIONDEFINITION,
 
         NT_EXPRESSIONSTATEMENT,
-        NT_IFSTATEMENT,
-        NT_WHILESTATEMENT,
-
         NT_RETURNSTATEMENT,
         NT_BREAKSTATEMENT,
 
-        NT_ASSIGNMENT,
+        NT_IFSTATEMENT,
+        NT_WHILESTATEMENT,
+        NT_COMPOUNDSTATEMENT,
+
+        NT_FUNCTIONCALL,
+        NT_DIVISION,
+        NT_MULTIPLICATION,
         NT_ADDITION,
         NT_SUBTRACTION,
-        NT_MULTIPLICATION,
-        NT_DIVISION,
-        NT_FCALL,
         NT_UNARYPLUS,
         NT_UNARYMINUS,
+        NT_ASSIGNMENT,
         NT_NOT,
         NT_AND,
         NT_OR,

@@ -1,4 +1,4 @@
-package org.lkop.MINIC2C;
+package org.lkop.MINIC2C.st;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.lkop.MINIC2C.lexerparsergenerated.MINICLexer;
@@ -168,10 +168,10 @@ public class STPrinterVisitor extends MINICParserBaseVisitor {
         String label = "";
         switch (ctx.op.getType()) {
             case MINICLexer.DIV:
-                label = "LTE" + "_" + serial_ounter++;
+                label = "Division" + "_" + serial_ounter++;
                 break;
             case MINICLexer.MULT:
-                label = "LT" + "_" + serial_ounter++;
+                label = "Multiplication" + "_" + serial_ounter++;
                 break;
         }
         writer.println("\""+parent_label.peek()+"\"->\""+label+"\";");
@@ -186,10 +186,10 @@ public class STPrinterVisitor extends MINICParserBaseVisitor {
         String label = "";
         switch (ctx.op.getType()) {
             case MINICLexer.PLUS:
-                label = "LTE" + "_" + serial_ounter++;
+                label = "Addition" + "_" + serial_ounter++;
                 break;
             case MINICLexer.MINUS:
-                label = "LT" + "_" + serial_ounter++;
+                label = "Subtraction" + "_" + serial_ounter++;
                 break;
         }
         writer.println("\""+parent_label.peek()+"\"->\""+label+"\";");
@@ -201,7 +201,7 @@ public class STPrinterVisitor extends MINICParserBaseVisitor {
 
     @Override
     public Integer visitExpr_UNARYPLUS(MINICParser.Expr_UNARYPLUSContext ctx) {
-        String label = "PLUS"+"_" + serial_ounter++;
+        String label = "UNARYPLUS"+"_" + serial_ounter++;
         writer.println("\""+parent_label.peek()+"\"->\""+label+"\";");
         parent_label.push(label);
         super.visitExpr_UNARYPLUS(ctx);
@@ -211,7 +211,7 @@ public class STPrinterVisitor extends MINICParserBaseVisitor {
 
     @Override
     public Integer visitExpr_UNARYMINUS(MINICParser.Expr_UNARYMINUSContext ctx) {
-        String label = "MINUS"+"_" + serial_ounter++;
+        String label = "UNARYMINUS"+"_" + serial_ounter++;
         writer.println("\""+parent_label.peek()+"\"->\""+label+"\";");
         parent_label.push(label);
         super.visitExpr_UNARYMINUS(ctx);
@@ -270,7 +270,7 @@ public class STPrinterVisitor extends MINICParserBaseVisitor {
     }
 
     @Override
-    public Integer visitExpr_OP(MINICParser.Expr_OPContext ctx) {
+    public Integer visitExpr_COMPARISON(MINICParser.Expr_COMPARISONContext ctx) {
         String label = "";
         switch (ctx.op.getType()) {
             case MINICLexer.LTE:
@@ -294,7 +294,7 @@ public class STPrinterVisitor extends MINICParserBaseVisitor {
         }
         writer.println("\""+parent_label.peek()+"\"->\""+label+"\";");
         parent_label.push(label);
-        super.visitExpr_OP(ctx);
+        super.visitExpr_COMPARISON(ctx);
         parent_label.pop();
         return 0;
     }
@@ -304,11 +304,11 @@ public class STPrinterVisitor extends MINICParserBaseVisitor {
         String label = "";
         switch (node.getSymbol().getType()) {
             case MINICLexer.NUMBER:
-                label = "NUMBER"+"_"+serial_ounter+++"_"+node.getSymbol().getText();
+                label = "NUMBER"+"_"+serial_ounter+++"_("+node.getSymbol().getText()+")";
                 writer.println("\""+parent_label.peek()+"\"->\""+label+"\";");
                 break;
             case MINICLexer.IDENTIFIER:
-                label = "IDENTIFIER"+"_"+serial_ounter+++"_"+node.getSymbol().getText();
+                label = "IDENTIFIER"+"_"+serial_ounter+++"_("+node.getSymbol().getText()+")";
                 writer.println("\""+parent_label.peek()+"\"->\""+label+"\";");
                 break;
         }

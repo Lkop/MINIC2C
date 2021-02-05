@@ -52,7 +52,7 @@ expression : NUMBER											            #expr_NUMBER
 		   | NOT expression									            #expr_NOT
 	       | expression AND expression						            #expr_AND
 		   | expression OR expression						            #expr_OR
-		   | expression op=(GT|GTE|LT|LTE|EQUAL|NEQUAL) expression		#expr_OP
+		   | expression op=(GT|GTE|LT|LTE|EQUAL|NEQUAL) expression		#expr_COMPARISON
 		   ;
 
 args : (expression (COMMA)?)+
