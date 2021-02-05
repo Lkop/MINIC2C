@@ -12,6 +12,8 @@ public class BaseTreeElement {
     private int serial_id;
     private List<BaseTreeElement> parents = null;
     private List<BaseTreeElement> children = null;
+    private int add_pos=0;
+
 
     public BaseTreeElement(){
         serial_id = count++;
@@ -47,5 +49,9 @@ public class BaseTreeElement {
 
     public BaseTreeElement getParent(int pos) {
         return parents.get(pos);
+    }
+
+    public BaseTreeElement getParentMovingNext(int pos) {
+        return parents.get(pos+add_pos++);
     }
 }

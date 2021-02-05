@@ -429,7 +429,7 @@ public class ASTPrinterVisitor extends ASTVisitor<Integer> {
     public Integer visitCIDENTIFIER(CIDENTIFIER node) {
         System.out.println("ASTVisitableElement -> CIDENTIFIER");
 
-        writer.println("\""+node.getParent(0).getGraphvizName()+"\"->\""+node.getGraphvizName()+"\";");
+        writer.println("\""+node.getParentMovingNext(0).getGraphvizName()+"\"->\""+node.getGraphvizName()+"\";");
         super.visitCIDENTIFIER(node);
         return 0;
     }

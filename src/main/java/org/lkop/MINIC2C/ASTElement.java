@@ -34,6 +34,11 @@ public class ASTElement extends ContextedElement<ASTElement> {
     }
 
     @Override
+    public ASTElement getParentMovingNext(int pos) {
+        return (ASTElement)super.getParentMovingNext(pos);
+    }
+
+    @Override
     public List<ASTElement> getChildrenInContext(int context) {
         return super.getChildrenInContext(context);
     }
