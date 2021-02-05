@@ -152,8 +152,6 @@ class CIf extends ASTElement {
 
     public CIf(int context) {
         super(ASTNodeType.NT_IFSTATEMENT, "CIf", context);
-
-        //m_Graphvizname = "CompileUnit" + M_Name;
     }
 
     @Override
@@ -174,8 +172,6 @@ class CWhile extends ASTElement {
 
     public CWhile(int context) {
         super(ASTNodeType.NT_WHILESTATEMENT, "CWhile", context);
-
-        //m_Graphvizname = "CompileUnit" + M_Name;
     }
 
     @Override
@@ -196,8 +192,6 @@ class CCompound extends ASTElement {
 
     public CCompound(int context) {
         super(ASTNodeType.NT_COMPOUNDSTATEMENT, "CCompound", context);
-
-        //m_Graphvizname = "CompileUnit" + M_Name;
     }
 
     @Override
@@ -218,8 +212,6 @@ class CFunctionCall extends ASTElement {
 
     public CFunctionCall(int context) {
         super(ASTNodeType.NT_FUNCTIONCALL, "CFunctionCall", context);
-
-        //m_Graphvizname = "CompileUnit" + M_Name;
     }
 
     @Override
@@ -240,8 +232,6 @@ class CDivision extends ASTElement {
 
     public CDivision(int context) {
         super(ASTNodeType.NT_DIVISION, "CDivision", context);
-
-        //m_Graphvizname = "CompileUnit" + M_Name;
     }
 
     @Override
@@ -262,8 +252,6 @@ class CMultiplication extends ASTElement {
 
     public CMultiplication(int context) {
         super(ASTNodeType.NT_MULTIPLICATION, "CMultiplication", context);
-
-        //m_Graphvizname = "CompileUnit" + M_Name;
     }
 
     @Override
@@ -284,8 +272,6 @@ class CAddition extends ASTElement {
 
     public CAddition(int context) {
         super(ASTNodeType.NT_ADDITION, "CAddition", context);
-
-        //m_Graphvizname = "CompileUnit" + M_Name;
     }
 
     @Override
@@ -306,8 +292,6 @@ class CSubtraction extends ASTElement {
 
     public CSubtraction(int context) {
         super(ASTNodeType.NT_SUBTRACTION, "CSubtraction", context);
-
-        //m_Graphvizname = "CompileUnit" + M_Name;
     }
 
     @Override
@@ -328,8 +312,6 @@ class CUnaryPlus extends ASTElement {
 
     public CUnaryPlus(int context) {
         super(ASTNodeType.NT_UNARYPLUS, "CUnaryPlus", context);
-
-        //m_Graphvizname = "CompileUnit" + M_Name;
     }
 
     @Override
@@ -350,8 +332,6 @@ class CUnaryMinus extends ASTElement {
 
     public CUnaryMinus(int context) {
         super(ASTNodeType.NT_UNARYMINUS, "CUnaryMinus", context);
-
-        //m_Graphvizname = "CompileUnit" + M_Name;
     }
 
     @Override
@@ -372,8 +352,6 @@ class CAssignment extends ASTElement {
 
     public CAssignment(int context) {
         super(ASTNodeType.NT_ASSIGNMENT, "CAssignment", context);
-
-        //m_Graphvizname = "CompileUnit" + M_Name;
     }
 
     @Override
@@ -394,8 +372,6 @@ class CNot extends ASTElement {
 
     public CNot(int context) {
         super(ASTNodeType.NT_NOT, "CNot", context);
-
-        //m_Graphvizname = "CompileUnit" + M_Name;
     }
 
     @Override
@@ -416,8 +392,6 @@ class CAnd extends ASTElement {
 
     public CAnd(int context) {
         super(ASTNodeType.NT_AND, "CAnd", context);
-
-        //m_Graphvizname = "CompileUnit" + M_Name;
     }
 
     @Override
@@ -438,8 +412,6 @@ class COr extends ASTElement {
 
     public COr(int context) {
         super(ASTNodeType.NT_OR, "COr", context);
-
-        //m_Graphvizname = "CompileUnit" + M_Name;
     }
 
     @Override
@@ -460,8 +432,6 @@ class CGt extends ASTElement {
 
     public CGt(int context) {
         super(ASTNodeType.NT_GT, "CGt", context);
-
-        //m_Graphvizname = "CompileUnit" + M_Name;
     }
 
     @Override
@@ -482,8 +452,6 @@ class CGte extends ASTElement {
 
     public CGte(int context) {
         super(ASTNodeType.NT_GTE, "CGte", context);
-
-        //m_Graphvizname = "CompileUnit" + M_Name;
     }
 
     @Override
@@ -504,8 +472,6 @@ class CLt extends ASTElement {
 
     public CLt(int context) {
         super(ASTNodeType.NT_LT, "CLt", context);
-
-        //m_Graphvizname = "CompileUnit" + M_Name;
     }
 
     @Override
@@ -526,8 +492,6 @@ class CLte extends ASTElement {
 
     public CLte(int context) {
         super(ASTNodeType.NT_LTE, "CLte", context);
-
-        //m_Graphvizname = "CompileUnit" + M_Name;
     }
 
     @Override
@@ -548,8 +512,6 @@ class CEqual extends ASTElement {
 
     public CEqual(int context) {
         super(ASTNodeType.NT_EQUAL, "CEqual", context);
-
-        //m_Graphvizname = "CompileUnit" + M_Name;
     }
 
     @Override
@@ -570,8 +532,6 @@ class CNequal extends ASTElement {
 
     public CNequal(int context) {
         super(ASTNodeType.NT_NEQUAL, "CNequal", context);
-
-        //m_Graphvizname = "CompileUnit" + M_Name;
     }
 
     @Override
