@@ -4,6 +4,8 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import org.lkop.MINIC2C.lexerparsergenerated.MINICLexer;
 import org.lkop.MINIC2C.lexerparsergenerated.MINICParser;
 import org.lkop.MINIC2C.lexerparsergenerated.MINICParserBaseVisitor;
+
+import java.util.HashMap;
 import java.util.Stack;
 
 
@@ -12,6 +14,7 @@ public class ASTGeneratorVisitor extends MINICParserBaseVisitor<Integer> {
     private CCompileUnit root;
     private Stack<ASTElement> parents = new Stack<>();
     private Stack<Integer> parents_ctx = new Stack<>();
+    private HashMap<String, ASTElement> var_st = new HashMap<>();
 
     public CCompileUnit getRoot() {
         return root;
@@ -502,17 +505,21 @@ public class ASTGeneratorVisitor extends MINICParserBaseVisitor<Integer> {
 
     @Override
     public Integer visitTerminal(TerminalNode node) {
-        ASTElement parent, new_node;
+        ASTElement parent = parents.peek();
+        ASTElement new_node;
 
         switch (node.getSymbol().getType()) {
             case MINICLexer.NUMBER:
-                parent = parents.peek();
                 new_node = new CNUMBER(parents_ctx.peek(), node.getText());
                 parent.addChild(new_node);
                 break;
             case MINICLexer.IDENTIFIER:
-                parent = parents.peek();
-                new_node = new CIDENTIFIER(parents_ctx.peek(), node.getText());
+                if(var_st.containsKey(node.getText())){
+                    new_node = var_st.get(node.getText());
+                }else{
+                    new_node = new CIDENTIFIER(parents_ctx.peek(), node.getText());
+                    var_st.put(node.getText(), new_node);
+                }
                 parent.addChild(new_node);
                 break;
         }
