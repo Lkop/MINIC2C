@@ -17,13 +17,10 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
         CodeFile new_node = new CodeFile(-1);
         code_file = new_node;
 
-        //Creating empty containers
-        new_node.addChild(new CodeRepository(CodeFile.CC_FILE_PREPROCESSOR));
-        new_node.addPreprocessorCode("#include <stdio.h>\n");
-        new_node.addPreprocessorCode("#include <stdlib.h>\n");
+        new_node.addPreprocessorCode("#include <stdio.h>");
+        new_node.addPreprocessorCode("#include <stdlib.h>");
 
-        new_node.addChild(new CodeRepository(CodeFile.CC_FILE_GLOBALS));
-
+        new_node.declareGlobalVariable("testvariable");
 
         CodeMainFunctionDefinition fd = new CodeMainFunctionDefinition(CodeFile.CC_FILE_FUNCTIONDEFINITION);
         new_node.addChild(fd);
@@ -107,6 +104,16 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
     }
 
     @Override
+    public Integer visitCReturnStatement(CReturnStatement node) {
+        return super.visitCReturnStatement(node);
+    }
+
+    @Override
+    public Integer visitCBreakStatement(CBreakStatement node) {
+        return super.visitCBreakStatement(node);
+    }
+
+    @Override
     public Integer visitCIf(CIf node) {
         CodeContainer parent = parents.peek();
 
@@ -161,103 +168,512 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
     }
 
     @Override
-    public Integer visitCAddition(CAddition node) {
-        //CodeRepository new_node = new CodeRepository(parents_ctx.peek());
-
+    public Integer visitCFunctionCall(CFunctionCall node) {
         CodeContainer parent = parents.peek();
-        //parent.addChild(new_node);
 
-        //parents.push(new_node);
-        for (ASTElement elem : node.getChildrenInContext(CAddition.CT_LEFT)) {
-            super.visit(elem);
+        if(parent instanceof CodeRepository) {
+            parent.addCode("(");
+            for (ASTElement elem : node.getChildrenInContext(CFunctionCall.CT_ARGS)) {
+                super.visit(elem);
+            }
+            parent.addCode(")");
+        }else{
+            CodeRepository new_node = new CodeRepository(parents_ctx.peek());
+            parent.addChild(new_node);
+
+            new_node.addCode("(");
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CFunctionCall.CT_ARGS)) {
+                super.visit(elem);
+            }
+            parents.pop();
+
+            new_node.addCode(")");
         }
-        //parents.pop();
+        return 0;
+    }
 
-        parent.addCode("+");
+    @Override
+    public Integer visitCDivision(CDivision node) {
+        CodeContainer parent = parents.peek();
 
-        //parents.push(new_node);
-        for (ASTElement elem : node.getChildrenInContext(CAddition.CT_RIGHT)) {
-            super.visit(elem);
+        if(parent instanceof CodeRepository) {
+            for (ASTElement elem : node.getChildrenInContext(CDivision.CT_LEFT)) {
+                super.visit(elem);
+            }
+            parent.addCode("/");
+            for (ASTElement elem : node.getChildrenInContext(CDivision.CT_RIGHT)) {
+                super.visit(elem);
+            }
+        }else{
+            CodeRepository new_node = new CodeRepository(parents_ctx.peek());
+            parent.addChild(new_node);
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CDivision.CT_LEFT)) {
+                super.visit(elem);
+            }
+            parents.pop();
+
+            new_node.addCode("/");
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CDivision.CT_RIGHT)) {
+                super.visit(elem);
+            }
+            parents.pop();
         }
-       //parents.pop();
+        return 0;
+    }
 
+    @Override
+    public Integer visitCMultiplication(CMultiplication node) {
+        CodeContainer parent = parents.peek();
 
+        if(parent instanceof CodeRepository) {
+            for (ASTElement elem : node.getChildrenInContext(CMultiplication.CT_LEFT)) {
+                super.visit(elem);
+            }
+            parent.addCode("*");
+            for (ASTElement elem : node.getChildrenInContext(CMultiplication.CT_RIGHT)) {
+                super.visit(elem);
+            }
+        }else{
+            CodeRepository new_node = new CodeRepository(parents_ctx.peek());
+            parent.addChild(new_node);
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CMultiplication.CT_LEFT)) {
+                super.visit(elem);
+            }
+            parents.pop();
+
+            new_node.addCode("*");
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CMultiplication.CT_RIGHT)) {
+                super.visit(elem);
+            }
+            parents.pop();
+        }
+        return 0;
+    }
+
+    @Override
+    public Integer visitCAddition(CAddition node) {
+        CodeContainer parent = parents.peek();
+
+        if(parent instanceof CodeRepository) {
+            for (ASTElement elem : node.getChildrenInContext(CAddition.CT_LEFT)) {
+                super.visit(elem);
+            }
+            parent.addCode("+");
+            for (ASTElement elem : node.getChildrenInContext(CAddition.CT_RIGHT)) {
+                super.visit(elem);
+            }
+        }else{
+            CodeRepository new_node = new CodeRepository(parents_ctx.peek());
+            parent.addChild(new_node);
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CAddition.CT_LEFT)) {
+                super.visit(elem);
+            }
+            parents.pop();
+
+            new_node.addCode("+");
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CAddition.CT_RIGHT)) {
+                super.visit(elem);
+            }
+            parents.pop();
+        }
+        return 0;
+    }
+
+    @Override
+    public Integer visitCSubtraction(CSubtraction node) {
+        CodeContainer parent = parents.peek();
+
+        if(parent instanceof CodeRepository) {
+            for (ASTElement elem : node.getChildrenInContext(CSubtraction.CT_LEFT)) {
+                super.visit(elem);
+            }
+            parent.addCode("-");
+            for (ASTElement elem : node.getChildrenInContext(CSubtraction.CT_RIGHT)) {
+                super.visit(elem);
+            }
+        }else{
+            CodeRepository new_node = new CodeRepository(parents_ctx.peek());
+            parent.addChild(new_node);
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CSubtraction.CT_LEFT)) {
+                super.visit(elem);
+            }
+            parents.pop();
+
+            new_node.addCode("-");
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CSubtraction.CT_RIGHT)) {
+                super.visit(elem);
+            }
+            parents.pop();
+        }
+        return 0;
+    }
+
+    @Override
+    public Integer visitCUnaryPlus(CUnaryPlus node) {
+        CodeContainer parent = parents.peek();
+
+        if(parent instanceof CodeRepository) {
+            parent.addCode("+");
+            for (ASTElement elem : node.getChildrenInContext(CUnaryPlus.CT_RIGHT)) {
+                super.visit(elem);
+            }
+        }else{
+            CodeRepository new_node = new CodeRepository(parents_ctx.peek());
+            parent.addChild(new_node);
+
+            new_node.addCode("+");
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CUnaryPlus.CT_RIGHT)) {
+                super.visit(elem);
+            }
+            parents.pop();
+        }
+        return 0;
+    }
+
+    @Override
+    public Integer visitCUnaryMinus(CUnaryMinus node) {
+        CodeContainer parent = parents.peek();
+
+        if(parent instanceof CodeRepository) {
+            parent.addCode("-");
+            for (ASTElement elem : node.getChildrenInContext(CUnaryMinus.CT_RIGHT)) {
+                super.visit(elem);
+            }
+        }else{
+            CodeRepository new_node = new CodeRepository(parents_ctx.peek());
+            parent.addChild(new_node);
+
+            new_node.addCode("-");
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CUnaryMinus.CT_RIGHT)) {
+                super.visit(elem);
+            }
+            parents.pop();
+        }
         return 0;
     }
 
     @Override
     public Integer visitCAssignment(CAssignment node) {
-        CodeRepository new_node = new CodeRepository(parents_ctx.peek());
-
         CodeContainer parent = parents.peek();
-        parent.addChild(new_node);
 
-        code_file.declareGlobalVariable("abc");
+        if(parent instanceof CodeRepository) {
+            for (ASTElement elem : node.getChildrenInContext(CAssignment.CT_LEFT)) {
+                super.visit(elem);
+            }
+            parent.addCode("=");
+            for (ASTElement elem : node.getChildrenInContext(CAssignment.CT_RIGHT)) {
+                super.visit(elem);
+            }
+        }else {
+            CodeRepository new_node = new CodeRepository(parents_ctx.peek());
+            parent.addChild(new_node);
 
-        parents.push(new_node);
-        for (ASTElement elem : node.getChildrenInContext(CAssignment.CT_LEFT)) {
-            super.visit(elem);
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CAssignment.CT_LEFT)) {
+                super.visit(elem);
+            }
+            parents.pop();
+
+            new_node.addCode("=");
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CAssignment.CT_RIGHT)) {
+                super.visit(elem);
+            }
+            parents.pop();
         }
-        parents.pop();
+        return 0;
+    }
 
-        new_node.addCode("=");
+    @Override
+    public Integer visitCNot(CNot node) {
+        CodeContainer parent = parents.peek();
 
-        parents.push(new_node);
-        for (ASTElement elem : node.getChildrenInContext(CAssignment.CT_RIGHT)) {
-            super.visit(elem);
+        if(parent instanceof CodeRepository) {
+            parent.addCode("!");
+            for (ASTElement elem : node.getChildrenInContext(CNot.CT_RIGHT)) {
+                super.visit(elem);
+            }
+        }else{
+            CodeRepository new_node = new CodeRepository(parents_ctx.peek());
+            parent.addChild(new_node);
+
+            new_node.addCode("!");
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CNot.CT_RIGHT)) {
+                super.visit(elem);
+            }
+            parents.pop();
         }
-        parents.pop();
+        return 0;
+    }
 
-        parent.addCode(new_node);
+    @Override
+    public Integer visitCAnd(CAnd node) {
+        CodeContainer parent = parents.peek();
+
+        if(parent instanceof CodeRepository) {
+            parent.addCode("&&");
+            for (ASTElement elem : node.getChildrenInContext(CAnd.CT_RIGHT)) {
+                super.visit(elem);
+            }
+        }else{
+            CodeRepository new_node = new CodeRepository(parents_ctx.peek());
+            parent.addChild(new_node);
+
+            new_node.addCode("&&");
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CAnd.CT_RIGHT)) {
+                super.visit(elem);
+            }
+            parents.pop();
+        }
+        return 0;
+    }
+
+    @Override
+    public Integer visitCOr(COr node) {
+        CodeContainer parent = parents.peek();
+
+        if(parent instanceof CodeRepository) {
+            parent.addCode("||");
+            for (ASTElement elem : node.getChildrenInContext(COr.CT_RIGHT)) {
+                super.visit(elem);
+            }
+        }else{
+            CodeRepository new_node = new CodeRepository(parents_ctx.peek());
+            parent.addChild(new_node);
+
+            new_node.addCode("||");
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(COr.CT_RIGHT)) {
+                super.visit(elem);
+            }
+            parents.pop();
+        }
         return 0;
     }
 
     @Override
     public Integer visitCGt(CGt node) {
-        return super.visitCGt(node);
+        CodeContainer parent = parents.peek();
+
+        if(parent instanceof CodeRepository) {
+            for (ASTElement elem : node.getChildrenInContext(CGt.CT_LEFT)) {
+                super.visit(elem);
+            }
+            parent.addCode(">");
+            for (ASTElement elem : node.getChildrenInContext(CGt.CT_RIGHT)) {
+                super.visit(elem);
+            }
+        }else{
+            CodeRepository new_node = new CodeRepository(parents_ctx.peek());
+            parent.addChild(new_node);
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CGt.CT_LEFT)) {
+                super.visit(elem);
+            }
+            parents.pop();
+
+            new_node.addCode(">");
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CGt.CT_RIGHT)) {
+                super.visit(elem);
+            }
+            parents.pop();
+        }
+        return 0;
     }
 
     @Override
     public Integer visitCGte(CGte node) {
-        return super.visitCGte(node);
+        CodeContainer parent = parents.peek();
+
+        if(parent instanceof CodeRepository) {
+            for (ASTElement elem : node.getChildrenInContext(CGte.CT_LEFT)) {
+                super.visit(elem);
+            }
+            parent.addCode(">=");
+            for (ASTElement elem : node.getChildrenInContext(CGte.CT_RIGHT)) {
+                super.visit(elem);
+            }
+        }else{
+            CodeRepository new_node = new CodeRepository(parents_ctx.peek());
+            parent.addChild(new_node);
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CGte.CT_LEFT)) {
+                super.visit(elem);
+            }
+            parents.pop();
+
+            new_node.addCode(">=");
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CGte.CT_RIGHT)) {
+                super.visit(elem);
+            }
+            parents.pop();
+        }
+        return 0;
     }
 
     @Override
     public Integer visitCLt(CLt node) {
-        return super.visitCLt(node);
+        CodeContainer parent = parents.peek();
+
+        if(parent instanceof CodeRepository) {
+            for (ASTElement elem : node.getChildrenInContext(CLt.CT_LEFT)) {
+                super.visit(elem);
+            }
+            parent.addCode("<");
+            for (ASTElement elem : node.getChildrenInContext(CLt.CT_RIGHT)) {
+                super.visit(elem);
+            }
+        }else{
+            CodeRepository new_node = new CodeRepository(parents_ctx.peek());
+            parent.addChild(new_node);
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CLt.CT_LEFT)) {
+                super.visit(elem);
+            }
+            parents.pop();
+
+            new_node.addCode("<");
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CLt.CT_RIGHT)) {
+                super.visit(elem);
+            }
+            parents.pop();
+        }
+        return 0;
     }
 
     @Override
     public Integer visitCLte(CLte node) {
-        return super.visitCLte(node);
+        CodeContainer parent = parents.peek();
+
+        if(parent instanceof CodeRepository) {
+            for (ASTElement elem : node.getChildrenInContext(CLte.CT_LEFT)) {
+                super.visit(elem);
+            }
+            parent.addCode("<=");
+            for (ASTElement elem : node.getChildrenInContext(CLte.CT_RIGHT)) {
+                super.visit(elem);
+            }
+        }else{
+            CodeRepository new_node = new CodeRepository(parents_ctx.peek());
+            parent.addChild(new_node);
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CLte.CT_LEFT)) {
+                super.visit(elem);
+            }
+            parents.pop();
+
+            new_node.addCode("<=");
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CLte.CT_RIGHT)) {
+                super.visit(elem);
+            }
+            parents.pop();
+        }
+        return 0;
     }
 
     @Override
     public Integer visitCEqual(CEqual node) {
-        return super.visitCEqual(node);
+        CodeContainer parent = parents.peek();
+
+        if(parent instanceof CodeRepository) {
+            for (ASTElement elem : node.getChildrenInContext(CEqual.CT_LEFT)) {
+                super.visit(elem);
+            }
+            parent.addCode("==");
+            for (ASTElement elem : node.getChildrenInContext(CEqual.CT_RIGHT)) {
+                super.visit(elem);
+            }
+        }else{
+            CodeRepository new_node = new CodeRepository(parents_ctx.peek());
+            parent.addChild(new_node);
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CEqual.CT_LEFT)) {
+                super.visit(elem);
+            }
+            parents.pop();
+
+            new_node.addCode("==");
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CEqual.CT_RIGHT)) {
+                super.visit(elem);
+            }
+            parents.pop();
+        }
+        return 0;
     }
 
     @Override
     public Integer visitCNequal(CNequal node) {
-        CodeRepository new_node = new CodeRepository(parents_ctx.peek());
-
         CodeContainer parent = parents.peek();
-        parent.addChild(new_node);
 
-        parents.push(new_node);
-        for (ASTElement elem : node.getChildrenInContext(CNequal.CT_LEFT)) {
-            super.visit(elem);
+        if(parent instanceof CodeRepository) {
+            for (ASTElement elem : node.getChildrenInContext(CNequal.CT_LEFT)) {
+                super.visit(elem);
+            }
+            parent.addCode("!=");
+            for (ASTElement elem : node.getChildrenInContext(CNequal.CT_RIGHT)) {
+                super.visit(elem);
+            }
+        }else{
+            CodeRepository new_node = new CodeRepository(parents_ctx.peek());
+            parent.addChild(new_node);
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CNequal.CT_LEFT)) {
+                super.visit(elem);
+            }
+            parents.pop();
+
+            new_node.addCode("!=");
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CNequal.CT_RIGHT)) {
+                super.visit(elem);
+            }
+            parents.pop();
         }
-        parents.pop();
-
-        new_node.addCode("!=");
-
-        parents.push(new_node);
-        for (ASTElement elem : node.getChildrenInContext(CNequal.CT_RIGHT)) {
-            super.visit(elem);
-        }
-        parents.pop();
-
         return 0;
     }
 
@@ -272,6 +688,7 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
     public Integer visitCIDENTIFIER(CIDENTIFIER node) {
         CodeContainer parent = parents.peek();
         parent.addCode(node.getValue());
+        code_file.declareGlobalVariable(node.getValue());
         return 0;
     }
 }
