@@ -46,12 +46,10 @@ public class CFilePrinterVisitor extends CodeVisitor<Integer>{
         pos.push(0);
         extractSubgraphs(node, CodeFile.CC_FILE_PREPROCESSOR, CodeFile.context_names);
         pos.pop();
-        dot_writer.println("\""+node.getGraphvizName()+"\"->\""+node.getChildrenInContext(CodeFile.CC_FILE_PREPROCESSOR).get(0).getGraphvizName()+"\";");
 
         pos.push(0);
         extractSubgraphs(node, CodeFile.CC_FILE_GLOBALS, CodeFile.context_names);
         pos.pop();
-        dot_writer.println("\""+node.getGraphvizName()+"\"->\""+node.getChildrenInContext(CodeFile.CC_FILE_GLOBALS).get(0).getGraphvizName()+"\";");
 
         pos.push(0);
         extractSubgraphs(node, CodeFile.CC_FILE_FUNCTIONDEFINITION, CodeFile.context_names);
@@ -104,16 +102,20 @@ public class CFilePrinterVisitor extends CodeVisitor<Integer>{
     }
 
     @Override
-    public Integer visitCodeCompoundStatement(CodeCompoundStatement node) {
-        System.out.println("CodeVisitableElement -> CodeCompoundStatement");
+    public Integer visitCodeIfStatement(CodeIfStatement node) {
+        System.out.println("CodeVisitableElement -> CodeIfStatement");
 
         pos.push(0);
-        extractSubgraphs(node, CodeCompoundStatement.CB_COMPOUND_BODY, CodeCompoundStatement.context_names);
+        extractSubgraphs(node, CodeIfStatement.CB_IF_CONDITION, CodeIfStatement.context_names);
+        pos.pop();
+
+        pos.push(0);
+        extractSubgraphs(node, CodeIfStatement.CB_IF_BODY, CodeIfStatement.context_names);
         pos.pop();
 
         dot_writer.println("\""+node.getParent(0).getGraphvizName()+"\"->\""+node.getGraphvizName()+"\";");
 
-        super.visitCodeCompoundStatement(node);
+        super.visitCodeIfStatement(node);
         return 0;
     }
 
@@ -136,20 +138,16 @@ public class CFilePrinterVisitor extends CodeVisitor<Integer>{
     }
 
     @Override
-    public Integer visitCodeIfStatement(CodeIfStatement node) {
-        System.out.println("CodeVisitableElement -> CodeIfStatement");
+    public Integer visitCodeCompoundStatement(CodeCompoundStatement node) {
+        System.out.println("CodeVisitableElement -> CodeCompoundStatement");
 
         pos.push(0);
-        extractSubgraphs(node, CodeIfStatement.CB_IF_CONDITION, CodeIfStatement.context_names);
-        pos.pop();
-
-        pos.push(0);
-        extractSubgraphs(node, CodeIfStatement.CB_IF_BODY, CodeIfStatement.context_names);
+        extractSubgraphs(node, CodeCompoundStatement.CB_COMPOUND_BODY, CodeCompoundStatement.context_names);
         pos.pop();
 
         dot_writer.println("\""+node.getParent(0).getGraphvizName()+"\"->\""+node.getGraphvizName()+"\";");
 
-        super.visitCodeIfStatement(node);
+        super.visitCodeCompoundStatement(node);
         return 0;
     }
 

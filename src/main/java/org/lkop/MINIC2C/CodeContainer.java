@@ -4,6 +4,7 @@ import org.lkop.MINIC2C.treecomponents.BaseTreeElement;
 import org.lkop.MINIC2C.treecomponents.BaseVisitor;
 import org.lkop.MINIC2C.treecomponents.VisitableBaseTreeElement;
 
+import java.util.HashSet;
 import java.util.List;
 
 public class CodeContainer extends ContextedElement<CodeContainer> {
@@ -66,20 +67,25 @@ class CodeFile extends CodeContainer {
         "PREPROCESSOR_CONTEXT" ,"GLOBALS_CONTEXT", "FUNDEFS_CONTEXT"
     };
 
+    HashSet<String> st_gvar = new HashSet<>();
+
     public CodeFile(int context) {
         super(CodeNodeType.CB_FILE, "CodeFile", context);
     }
 
     public void addPreprocessorCode(String prep_code) {
-//        CodeContainer rep = new CodeContainer(CodeNodeType.CB_CODEREPOSITORY, "global_var", CC_FILE_GLOBALS);
-//        rep.addCode(prep_code+";\n");
-        getChild(CC_FILE_PREPROCESSOR).addCode(prep_code);
+        CodeRepository repo = new CodeRepository(CodeFile.CC_FILE_PREPROCESSOR);
+        repo.addCode(prep_code+"\n");
+        this.addChild(repo);
     }
 
-    public void declareGlobalVariable(String varname) {
-//        CodeContainer rep = new CodeContainer(CodeNodeType.CB_CODEREPOSITORY, "global_var", CC_FILE_GLOBALS);
-//        rep.addCode("float "+varname+";\n");
-        getChild(CC_FILE_GLOBALS).addCode("float "+varname+";\n");
+    public void declareGlobalVariable(String variable) {
+        if(!st_gvar.contains(variable)) {
+            st_gvar.add(variable);
+            CodeRepository repo = new CodeRepository(CodeFile.CC_FILE_GLOBALS);
+            repo.addCode("float "+variable+";\n");
+            this.addChild(repo);
+        }
     }
 
     @Override
@@ -151,26 +157,6 @@ class CodeExpressionStatement extends CodeContainer {
     }
 }
 
-class CodeCompoundStatement extends CodeContainer {
-    public static final int CB_COMPOUND_BODY = 0;
-    public static final String[] context_names = {
-        "CB_COMPOUND_BODY"
-    };
-
-    public CodeCompoundStatement(int context) {
-        super(CodeNodeType.CB_COMPOUNDSTATEMENT, "CodeCompoundStatement", context);
-    }
-
-    @Override
-    public <T> T accept(BaseVisitor<? extends T> visitor) {
-        CodeVisitor v = (CodeVisitor)visitor;
-        if (v != null) {
-            return (T) v.visitCodeCompoundStatement(this);
-        }
-        return null;
-    }
-}
-
 class CodeIfStatement extends CodeContainer {
     public static final int CB_IF_CONDITION = 0, CB_IF_BODY = 1, CB_ELSE_BODY = 2;
     public static final String[] context_names = {
@@ -206,6 +192,26 @@ class CodeWhileStatement extends CodeContainer {
         CodeVisitor v = (CodeVisitor)visitor;
         if (v != null) {
             return (T) v.visitCodeWhileStatement(this);
+        }
+        return null;
+    }
+}
+
+class CodeCompoundStatement extends CodeContainer {
+    public static final int CB_COMPOUND_BODY = 0;
+    public static final String[] context_names = {
+            "CB_COMPOUND_BODY"
+    };
+
+    public CodeCompoundStatement(int context) {
+        super(CodeNodeType.CB_COMPOUNDSTATEMENT, "CodeCompoundStatement", context);
+    }
+
+    @Override
+    public <T> T accept(BaseVisitor<? extends T> visitor) {
+        CodeVisitor v = (CodeVisitor)visitor;
+        if (v != null) {
+            return (T) v.visitCodeCompoundStatement(this);
         }
         return null;
     }
