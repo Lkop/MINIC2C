@@ -12,6 +12,7 @@ public class CFileBuilderVisitor extends CodeVisitor<Integer>{
     private String filename;
     private PrintWriter c_writer;
     private int nesting_lvl=0;
+    private int tmp_nesting_lvl=0;
 
     public CFileBuilderVisitor(String filename) throws FileNotFoundException {
         this.filename = filename;
@@ -88,7 +89,7 @@ public class CFileBuilderVisitor extends CodeVisitor<Integer>{
         for (CodeContainer elem : node.getChildrenInContext(CodeIfStatement.CB_IF_CONDITION)) {
             super.visit(elem);
         }
-        c_writer.print(addTabs(nesting_lvl)+")");
+        c_writer.print(")");
 
         for (CodeContainer elem : node.getChildrenInContext(CodeIfStatement.CB_IF_BODY)) {
             super.visit(elem);
@@ -105,11 +106,25 @@ public class CFileBuilderVisitor extends CodeVisitor<Integer>{
         for (CodeContainer elem : node.getChildrenInContext(CodeWhileStatement.CB_WHILE_CONDITION)) {
             super.visit(elem);
         }
-        c_writer.print(addTabs(nesting_lvl)+")");
+        c_writer.print(")");
 
         for (CodeContainer elem : node.getChildrenInContext(CodeWhileStatement.CB_WHILE_BODY)) {
             super.visit(elem);
         }
+
+        return 0;
+    }
+
+    @Override
+    public Integer visitCodeCondition(CodeCondition node) {
+        System.out.println("CodeVisitableElement -> CodeCondition");
+
+        tmp_nesting_lvl = nesting_lvl;
+        nesting_lvl = 0;
+        for (CodeContainer elem : node.getChildrenInContext(CodeCondition.CB_CONDITION)) {
+            super.visit(elem);
+        }
+        nesting_lvl = tmp_nesting_lvl;
 
         return 0;
     }

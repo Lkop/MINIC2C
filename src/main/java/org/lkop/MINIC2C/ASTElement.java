@@ -69,13 +69,13 @@ class CCompileUnit extends ASTElement {
     }
 }
 
-class CFuntionDefinition extends ASTElement {
+class CFunctionDefinition extends ASTElement {
     public static final int CT_NAME = 0, CT_ARGS = 1, CT_BODY = 2;
     public static String[] context_names = {
         "FUNCTION_NAME_CONTEXT", "FUNCTION_ARGS_CONTEXT", "FUNCTION_BODY_CONTEXT"
     };
 
-    public CFuntionDefinition(int context) {
+    public CFunctionDefinition(int context) {
         super(ASTNodeType.NT_FUNCTIONDEFINITION, "CFuntionDefinition", context);
     }
 
@@ -150,9 +150,9 @@ class CBreakStatement extends ASTElement {
 }
 
 class CIf extends ASTElement {
-    public static final int CT_IF_EXPRESSION = 0, CT_IF_STATEMENT = 1, CT_ELSE_STATEMENT = 2;
+    public static final int CT_IF_CONDITION = 0, CT_IF_STATEMENT = 1, CT_ELSE_STATEMENT = 2;
     public static final String[] context_names = {
-        "IF_EXPRESSION_CONTEXT", "IF_STATEMENT_CONTEXT", "ELSE_STATEMENT_CONTEXT"
+        "IF_CONDITION_CONTEXT", "IF_STATEMENT_CONTEXT", "ELSE_STATEMENT_CONTEXT"
     };
 
     public CIf(int context) {
@@ -170,9 +170,9 @@ class CIf extends ASTElement {
 }
 
 class CWhile extends ASTElement {
-    public static final int CT_WHILE_EXPRESSION = 0, CT_WHILE_STATEMENT = 1;
+    public static final int CT_WHILE_CONDITION = 0, CT_WHILE_STATEMENT = 1;
     public static final String[] context_names = {
-        "WHILE_EXPRESSION_CONTEXT", "WHILE_STATEMENT_CONTEXT"
+        "WHILE_CONDITION_CONTEXT", "WHILE_STATEMENT_CONTEXT"
     };
 
     public CWhile(int context) {
@@ -209,10 +209,30 @@ class CCompound extends ASTElement {
     }
 }
 
-class CFunctionCall extends ASTElement {
-    public static final int CT_ARGS = 0;
+class CCondition extends ASTElement {
+    public static final int CT_CONDITION_EXPRESSION = 0;
     public static final String[] context_names = {
-        "FCALL_ARGS_CONTEXT"
+            "CONDITION_EXPRESSION_CONTEXT"
+    };
+
+    public CCondition(int context) {
+        super(ASTNodeType.NT_CONDITION, "CCondition", context);
+    }
+
+    @Override
+    public <T> T accept(BaseVisitor<? extends T> visitor) {
+        ASTVisitor v = (ASTVisitor)visitor;
+        if (v != null) {
+            return (T) v.visitCCondition(this);
+        }
+        return null;
+    }
+}
+
+class CFunctionCall extends ASTElement {
+    public static final int CT_NAME = 0, CT_ARGS = 1;
+    public static final String[] context_names = {
+            "FCALL_NAME_CONTEXT", "FCALL_ARGS_CONTEXT"
     };
 
     public CFunctionCall(int context) {

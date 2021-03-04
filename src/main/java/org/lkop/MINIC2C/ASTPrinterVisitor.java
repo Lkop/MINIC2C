@@ -106,7 +106,7 @@ public class ASTPrinterVisitor extends ASTVisitor<Integer> {
         System.out.println("ASTVisitableElement -> CIf");
 
         pos.push(0);
-        extractSubgraphs(node, CIf.CT_IF_EXPRESSION, CIf.context_names);
+        extractSubgraphs(node, CIf.CT_IF_CONDITION, CIf.context_names);
         pos.pop();
 
         pos.push(0);
@@ -124,7 +124,7 @@ public class ASTPrinterVisitor extends ASTVisitor<Integer> {
         System.out.println("ASTVisitableElement -> CWhile");
 
         pos.push(0);
-        extractSubgraphs(node, CWhile.CT_WHILE_EXPRESSION, CWhile.context_names);
+        extractSubgraphs(node, CWhile.CT_WHILE_CONDITION, CWhile.context_names);
         pos.pop();
 
         pos.push(0);
@@ -148,6 +148,20 @@ public class ASTPrinterVisitor extends ASTVisitor<Integer> {
         writer.println("\""+node.getParent(0).getGraphvizName()+"\"->\""+node.getGraphvizName()+"\";");
 
         super.visitCCompound(node);
+        return 0;
+    }
+
+    @Override
+    public Integer visitCCondition(CCondition node) {
+        System.out.println("ASTVisitableElement -> CCondition");
+
+        pos.push(0);
+        extractSubgraphs(node, CCondition.CT_CONDITION_EXPRESSION, CCondition.context_names);
+        pos.pop();
+
+        writer.println("\""+node.getParent(0).getGraphvizName()+"\"->\""+node.getGraphvizName()+"\";");
+
+        super.visitCCondition(node);
         return 0;
     }
 

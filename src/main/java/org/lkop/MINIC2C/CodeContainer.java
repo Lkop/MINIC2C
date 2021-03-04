@@ -217,6 +217,26 @@ class CodeCompoundStatement extends CodeContainer {
     }
 }
 
+class CodeCondition extends CodeContainer {
+    public static final int CB_CONDITION = 0;
+    public static final String[] context_names = {
+            "CB_CONDITION"
+    };
+
+    public CodeCondition(int context) {
+        super(CodeNodeType.CB_CONDITION, "CodeCondition", context);
+    }
+
+    @Override
+    public <T> T accept(BaseVisitor<? extends T> visitor) {
+        CodeVisitor v = (CodeVisitor)visitor;
+        if (v != null) {
+            return (T) v.visitCodeCondition(this);
+        }
+        return null;
+    }
+}
+
 class CodeRepository extends CodeContainer {
 
     public CodeRepository(int context) {

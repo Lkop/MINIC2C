@@ -152,6 +152,20 @@ public class CFilePrinterVisitor extends CodeVisitor<Integer>{
     }
 
     @Override
+    public Integer visitCodeCondition(CodeCondition node) {
+        System.out.println("CodeVisitableElement -> CodeCondition");
+
+        pos.push(0);
+        extractSubgraphs(node, CodeCondition.CB_CONDITION, CodeCondition.context_names);
+        pos.pop();
+
+        dot_writer.println("\""+node.getParent(0).getGraphvizName()+"\"->\""+node.getGraphvizName()+"\";");
+
+        super.visitCodeCondition(node);
+        return 0;
+    }
+
+    @Override
     public Integer visitCodeRepository(CodeRepository node) {
         System.out.println("CodeVisitableElement -> CodeRepository");
 

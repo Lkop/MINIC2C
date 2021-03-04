@@ -9,5 +9,6 @@ public enum CodeNodeType {
         CB_WHILESTATEMENT,
         CB_IFSTATEMENT,
         CB_COMPOUNDSTATEMENT,
+        CB_CONDITION,
         CB_CODEREPOSITORY
 }

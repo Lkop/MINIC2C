@@ -27,10 +27,10 @@ statement : expression QM		#statement_ExpressionStatement
 		  | BREAK QM			 #statement_BreakStatement
 		  ;
 
-ifstatement : IF LP expression RP statement (ELSE statement)?
+ifstatement : IF LP condition RP statement (ELSE statement)?
 			;
 
-whilestatement : WHILE LP expression RP statement
+whilestatement : WHILE LP condition RP statement
 			   ;
 
 compoundStatement : LB RB
@@ -39,6 +39,9 @@ compoundStatement : LB RB
 
 statementList : (statement)+ 
 			  ;
+
+condition : expression
+          ;
 
 expression : NUMBER											            #expr_NUMBER
 		   | IDENTIFIER										            #expr_IDENTIFIER

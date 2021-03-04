@@ -9,7 +9,7 @@ public abstract class ASTVisitor<T> extends BaseVisitor<T> {
         return super.visitChildren(node);
     }
 
-    public T visitCFunctionDefinition(CFuntionDefinition node) {
+    public T visitCFunctionDefinition(CFunctionDefinition node) {
         return super.visitChildren(node);
     }
 
@@ -34,6 +34,10 @@ public abstract class ASTVisitor<T> extends BaseVisitor<T> {
     }
 
     public T visitCCompound(CCompound node) {
+        return super.visitChildren(node);
+    }
+
+    public T visitCCondition(CCondition node) {
         return super.visitChildren(node);
     }
 

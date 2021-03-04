@@ -48,25 +48,25 @@ public class ASTGeneratorVisitor extends MINICParserBaseVisitor<Integer> {
     public Integer visitFunctionDefinition(MINICParser.FunctionDefinitionContext ctx) {
         ASTElement parent = parents.peek();
 
-        CFuntionDefinition new_node = new CFuntionDefinition(parents_ctx.peek());
+        CFunctionDefinition new_node = new CFunctionDefinition(parents_ctx.peek());
         parent.addChild(new_node);
 
         parents.push(new_node);
-        parents_ctx.push(CFuntionDefinition.CT_NAME);
+        parents_ctx.push(CFunctionDefinition.CT_NAME);
         super.visit(ctx.IDENTIFIER());
         parents_ctx.pop();
         parents.pop();
 
         if (ctx.fargs() != null) {
             parents.push(new_node);
-            parents_ctx.push(CFuntionDefinition.CT_ARGS);
+            parents_ctx.push(CFunctionDefinition.CT_ARGS);
             super.visit(ctx.fargs());
             parents_ctx.pop();
             parents.pop();
         }
 
         parents.push(new_node);
-        parents_ctx.push(CFuntionDefinition.CT_BODY);
+        parents_ctx.push(CFunctionDefinition.CT_BODY);
         super.visit(ctx.compoundStatement());
         parents_ctx.pop();
         parents.pop();
@@ -131,8 +131,8 @@ public class ASTGeneratorVisitor extends MINICParserBaseVisitor<Integer> {
         parent.addChild(new_node);
 
         parents.push(new_node);
-        parents_ctx.push(CIf.CT_IF_EXPRESSION);
-        super.visit(ctx.expression());
+        parents_ctx.push(CIf.CT_IF_CONDITION);
+        super.visit(ctx.condition());
         parents_ctx.pop();
         parents.pop();
 
@@ -153,8 +153,8 @@ public class ASTGeneratorVisitor extends MINICParserBaseVisitor<Integer> {
         parent.addChild(new_node);
 
         parents.push(new_node);
-        parents_ctx.push(CWhile.CT_WHILE_EXPRESSION);
-        super.visit(ctx.expression());
+        parents_ctx.push(CWhile.CT_WHILE_CONDITION);
+        super.visit(ctx.condition());
         parents_ctx.pop();
         parents.pop();
 
@@ -177,6 +177,22 @@ public class ASTGeneratorVisitor extends MINICParserBaseVisitor<Integer> {
         parents.push(new_node);
         parents_ctx.push(CCompound.CT_COMPOUND_STATEMENTSLIST);
         super.visit(ctx.statementList());
+        parents_ctx.pop();
+        parents.pop();
+
+        return 0;
+    }
+
+    @Override
+    public Integer visitCondition(MINICParser.ConditionContext ctx) {
+        ASTElement parent = parents.peek();
+
+        CCondition new_node = new CCondition(parents_ctx.peek());
+        parent.addChild(new_node);
+
+        parents.push(new_node);
+        parents_ctx.push(CCondition.CT_CONDITION_EXPRESSION);
+        super.visit(ctx.expression());
         parents_ctx.pop();
         parents.pop();
 

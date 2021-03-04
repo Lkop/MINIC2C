@@ -85,25 +85,6 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
     }
 
     @Override
-    public Integer visitCCompound(CCompound node) {
-        CodeContainer parent = parents.peek();
-
-        CodeCompoundStatement new_node = new CodeCompoundStatement(parents_ctx.peek());
-        parent.addChild(new_node);
-
-        parents.push(new_node);
-        parents_ctx.push(CodeCompoundStatement.CB_COMPOUND_BODY);
-        for (ASTElement elem : node.getChildrenInContext(CCompound.CT_COMPOUND_STATEMENTSLIST)) {
-            super.visit(elem);
-        }
-        parents_ctx.pop();
-        parents.pop();
-
-        parent.addCode(new_node);
-        return 0;
-    }
-
-    @Override
     public Integer visitCReturnStatement(CReturnStatement node) {
         return super.visitCReturnStatement(node);
     }
@@ -122,7 +103,7 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
 
         parents.push(new_node);
         parents_ctx.push(CodeIfStatement.CB_IF_CONDITION);
-        for (ASTElement elem : node.getChildrenInContext(CIf.CT_IF_EXPRESSION)) {
+        for (ASTElement elem : node.getChildrenInContext(CIf.CT_IF_CONDITION)) {
             super.visit(elem);
         }
         parents_ctx.pop();
@@ -149,7 +130,7 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
 
         parents.push(new_node);
         parents_ctx.push(CodeWhileStatement.CB_WHILE_CONDITION);
-        for (ASTElement elem : node.getChildrenInContext(CWhile.CT_WHILE_EXPRESSION)) {
+        for (ASTElement elem : node.getChildrenInContext(CWhile.CT_WHILE_CONDITION)) {
             super.visit(elem);
         }
         parents_ctx.pop();
@@ -158,6 +139,44 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
         parents.push(new_node);
         parents_ctx.push(CodeWhileStatement.CB_WHILE_BODY);
         for (ASTElement elem : node.getChildrenInContext(CWhile.CT_WHILE_STATEMENT)) {
+            super.visit(elem);
+        }
+        parents_ctx.pop();
+        parents.pop();
+
+        parent.addCode(new_node);
+        return 0;
+    }
+
+    @Override
+    public Integer visitCCompound(CCompound node) {
+        CodeContainer parent = parents.peek();
+
+        CodeCompoundStatement new_node = new CodeCompoundStatement(parents_ctx.peek());
+        parent.addChild(new_node);
+
+        parents.push(new_node);
+        parents_ctx.push(CodeCompoundStatement.CB_COMPOUND_BODY);
+        for (ASTElement elem : node.getChildrenInContext(CCompound.CT_COMPOUND_STATEMENTSLIST)) {
+            super.visit(elem);
+        }
+        parents_ctx.pop();
+        parents.pop();
+
+        parent.addCode(new_node);
+        return 0;
+    }
+
+    @Override
+    public Integer visitCCondition(CCondition node) {
+        CodeContainer parent = parents.peek();
+
+        CodeCondition new_node = new CodeCondition(parents_ctx.peek());
+        parent.addChild(new_node);
+
+        parents.push(new_node);
+        parents_ctx.push(CodeCondition.CB_CONDITION);
+        for (ASTElement elem : node.getChildrenInContext(CCondition.CT_CONDITION_EXPRESSION)) {
             super.visit(elem);
         }
         parents_ctx.pop();

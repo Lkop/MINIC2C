@@ -154,6 +154,16 @@ public class STPrinterVisitor extends MINICParserBaseVisitor {
     }
 
     @Override
+    public Integer visitCondition(MINICParser.ConditionContext ctx) {
+        String label = "Condition"+"_" + serial_ounter++;
+        writer.println("\""+parent_label.peek()+"\"->\""+label+"\";");
+        parent_label.push(label);
+        super.visitCondition(ctx);
+        parent_label.pop();
+        return 0;
+    }
+
+    @Override
     public Integer visitExpr_FunctionCall(MINICParser.Expr_FunctionCallContext ctx) {
         String label = "Function_Call"+"_" + serial_ounter++;
         writer.println("\""+parent_label.peek()+"\"->\""+label+"\";");

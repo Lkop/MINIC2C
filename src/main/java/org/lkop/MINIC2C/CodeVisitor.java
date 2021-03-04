@@ -28,6 +28,10 @@ public class CodeVisitor<T> extends BaseVisitor<T> {
         return super.visitChildren(node);
     }
 
+    public T visitCodeCondition(CodeCondition node) {
+        return super.visitChildren(node);
+    }
+
     public T visitCodeRepository(CodeRepository node) {
         return super.visitChildren(node);
     }

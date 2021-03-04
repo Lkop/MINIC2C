@@ -13,6 +13,7 @@ public enum ASTNodeType {
         NT_IFSTATEMENT,
         NT_WHILESTATEMENT,
         NT_COMPOUNDSTATEMENT,
+        NT_CONDITION,
 
         NT_FUNCTIONCALL,
         NT_DIVISION,
