@@ -1,5 +1,8 @@
 package org.lkop.MINIC2C.treecomponents;
 
+import java.util.List;
+
+
 public abstract class BaseVisitor<T> implements TreeVisitor {
 
     private BaseTreeElement parent = null;
@@ -15,9 +18,11 @@ public abstract class BaseVisitor<T> implements TreeVisitor {
         T netResult = null;
 
         if (node.getChildren() != null) {
-            for (BaseTreeElement child : node.getChildren()) {
-                VisitableBaseTreeElement element = (VisitableBaseTreeElement) child;
-                netResult = (T) element.accept(this);
+            for (List<BaseTreeElement> lchild : node.getChildren()) {
+                for (BaseTreeElement child : lchild) {
+                    VisitableBaseTreeElement element = (VisitableBaseTreeElement) child;
+                    netResult = (T) element.accept(this);
+                }
             }
             parent = oldParent;
         }

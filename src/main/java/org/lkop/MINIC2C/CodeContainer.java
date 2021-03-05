@@ -31,10 +31,10 @@ public class CodeContainer extends ContextedElement<CodeContainer> {
         this.code += cc.code;
     }
 
-    @Override
-    public CodeContainer getChild(int context) {
-        return (CodeContainer)super.getChild(context);
-    }
+//    @Override
+//    public CodeContainer getChild(int context) {
+//        return (CodeContainer)super.getChild(context);
+//    }
 
     @Override
     public CodeContainer getParent(int pos) {

@@ -557,7 +557,7 @@ public class ASTGeneratorVisitor extends MINICParserBaseVisitor<Integer> {
                         var_st.put(node.getText(), new_node);
                     }
                 }
-                parent.addChild(new_node);
+                parent.addChild(new_node, parents_ctx.peek());
                 break;
         }
         return 0;

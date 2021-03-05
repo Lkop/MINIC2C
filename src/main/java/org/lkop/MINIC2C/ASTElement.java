@@ -23,10 +23,10 @@ public class ASTElement extends ContextedElement<ASTElement> {
         return name+"_"+getSerialId();
     }
 
-    @Override
-    public ASTElement getChild(int context) {
-        return (ASTElement)super.getChild(context);
-    }
+//    @Override
+//    public ASTElement getChild(int context) {
+//        return (ASTElement)super.getChild(context);
+//    }
 
     @Override
     public ASTElement getParent(int pos) {

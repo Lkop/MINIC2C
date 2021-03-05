@@ -11,7 +11,7 @@ public class BaseTreeElement {
 
     private int serial_id;
     private List<BaseTreeElement> parents = null;
-    private List<BaseTreeElement> children = null;
+    private List<List<BaseTreeElement>> children = null;
     private int add_pos=0;
 
 
@@ -23,7 +23,7 @@ public class BaseTreeElement {
         return serial_id;
     }
 
-    public void addChild(BaseTreeElement child) {
+    public void addChild(BaseTreeElement child, int context) {
         if (child.parents == null){
             child.parents = new ArrayList<>();
         }
@@ -32,15 +32,28 @@ public class BaseTreeElement {
         if (children == null){
             children = new ArrayList<>();
         }
-        children.add(child);
+
+        children.add(new ArrayList<>());
+        children.add(new ArrayList<>());
+        children.add(new ArrayList<>());
+        children.add(new ArrayList<>());
+        children.add(new ArrayList<>());
+
+        if (context >= 0) {
+            children.get(context).add(child);
+        }
     }
 
-    public List<BaseTreeElement> getChildren() {
+    public List<List<BaseTreeElement>> getChildren() {
         return children;
     }
 
+    public List<BaseTreeElement> getChildren(int context) {
+        return children.get(context);
+    }
+
     public BaseTreeElement getChild(int pos) {
-        return children.get(pos);
+        return children.get(0).get(pos);
     }
 
     public List<BaseTreeElement> getParents() {
