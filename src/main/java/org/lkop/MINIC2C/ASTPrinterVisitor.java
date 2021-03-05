@@ -64,7 +64,6 @@ public class ASTPrinterVisitor extends ASTVisitor<Integer> {
     }
 
     @Override
-    public Integer visitCFunctionDefinition(CFuntionDefinition node) {
     public Integer visitCFunctionDefinition(CFunctionDefinition node) {
         System.out.println("ASTVisitableElement -> CFunctionDefinition");
 

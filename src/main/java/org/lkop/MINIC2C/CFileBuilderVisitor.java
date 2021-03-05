@@ -5,7 +5,7 @@ import org.lkop.MINIC2C.utils.GIFCreator;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Stack;
+
 
 public class CFileBuilderVisitor extends CodeVisitor<Integer>{
 

@@ -1,11 +1,10 @@
 package org.lkop.MINIC2C;
 
-import org.lkop.MINIC2C.treecomponents.BaseTreeElement;
 import org.lkop.MINIC2C.treecomponents.BaseVisitor;
-import org.lkop.MINIC2C.treecomponents.VisitableBaseTreeElement;
 
 import java.util.HashSet;
 import java.util.List;
+
 
 public class CodeContainer extends ContextedElement<CodeContainer> {
 
