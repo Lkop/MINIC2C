@@ -102,6 +102,20 @@ public class CFilePrinterVisitor extends CodeVisitor<Integer>{
     }
 
     @Override
+    public Integer visitCodeReturnStatement(CodeReturnStatement node) {
+        System.out.println("CodeVisitableElement -> CodeReturnStatement");
+
+        pos.push(0);
+        extractSubgraphs(node, CodeReturnStatement.CB_EXPRESSION_BODY, CodeReturnStatement.context_names);
+        pos.pop();
+
+        dot_writer.println("\""+node.getParent(0).getGraphvizName()+"\"->\""+node.getGraphvizName()+"\";");
+
+        super.visitCodeReturnStatement(node);
+        return 0;
+    }
+
+    @Override
     public Integer visitCodeIfStatement(CodeIfStatement node) {
         System.out.println("CodeVisitableElement -> CodeIfStatement");
 

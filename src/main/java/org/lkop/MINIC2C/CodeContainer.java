@@ -157,6 +157,26 @@ class CodeExpressionStatement extends CodeContainer {
     }
 }
 
+class CodeReturnStatement extends CodeContainer {
+    public static final int CB_EXPRESSION_BODY = 0;
+    public static final String[] context_names = {
+        "RETURN_EXPRESSION_BODY"
+    };
+
+    public CodeReturnStatement(int context) {
+        super(CodeNodeType.CB_RETURNSTATEMENT, "CodeReturnStatement", context);
+    }
+
+    @Override
+    public <T> T accept(BaseVisitor<? extends T> visitor) {
+        CodeVisitor v = (CodeVisitor)visitor;
+        if (v != null) {
+            return (T) v.visitCodeReturnStatement(this);
+        }
+        return null;
+    }
+}
+
 class CodeIfStatement extends CodeContainer {
     public static final int CB_IF_CONDITION = 0, CB_IF_BODY = 1, CB_ELSE_BODY = 2;
     public static final String[] context_names = {

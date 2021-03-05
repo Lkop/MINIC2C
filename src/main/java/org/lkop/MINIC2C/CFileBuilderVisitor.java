@@ -82,6 +82,22 @@ public class CFileBuilderVisitor extends CodeVisitor<Integer>{
     }
 
     @Override
+    public Integer visitCodeReturnStatement(CodeReturnStatement node) {
+        System.out.println("CodeVisitableElement -> CodeReturnStatement");
+
+        c_writer.print(addTabs(nesting_lvl)+"return ");
+        tmp_nesting_lvl = nesting_lvl;
+        nesting_lvl = 0;
+        for (CodeContainer elem : node.getChildrenInContext(CodeReturnStatement.CB_EXPRESSION_BODY)) {
+            super.visit(elem);
+        }
+        nesting_lvl = tmp_nesting_lvl;
+        c_writer.println(";");
+
+        return 0;
+    }
+
+    @Override
     public Integer visitCodeIfStatement(CodeIfStatement node) {
         System.out.println("CodeVisitableElement -> CodeIfStatement");
 

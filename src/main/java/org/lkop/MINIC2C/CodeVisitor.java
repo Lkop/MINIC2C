@@ -16,6 +16,10 @@ public class CodeVisitor<T> extends BaseVisitor<T> {
         return super.visitChildren(node);
     }
 
+    public T visitCodeReturnStatement(CodeReturnStatement node) {
+        return super.visitChildren(node);
+    }
+
     public T visitCodeWhileStatement(CodeWhileStatement node) {
         return super.visitChildren(node);
     }

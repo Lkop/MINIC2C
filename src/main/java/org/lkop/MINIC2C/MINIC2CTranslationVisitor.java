@@ -86,7 +86,25 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
 
     @Override
     public Integer visitCReturnStatement(CReturnStatement node) {
-        return super.visitCReturnStatement(node);
+        CodeContainer parent = parents.peek();
+
+        CodeReturnStatement new_node = new CodeReturnStatement(parents_ctx.peek());
+        parent.addChild(new_node);
+
+        new_node.addCode("return ");
+
+        parents.push(new_node);
+        parents_ctx.push(CodeReturnStatement.CB_EXPRESSION_BODY);
+        for (ASTElement elem : node.getChildrenInContext(CReturnStatement.CT_EXRESSION)) {
+            super.visit(elem);
+        }
+        parents_ctx.pop();
+        parents.pop();
+
+        new_node.addCode(";\n");
+
+        parent.addCode(new_node);
+        return 0;
     }
 
     @Override
