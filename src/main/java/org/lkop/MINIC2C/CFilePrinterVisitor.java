@@ -52,7 +52,11 @@ public class CFilePrinterVisitor extends CodeVisitor<Integer>{
         pos.pop();
 
         pos.push(0);
-        extractSubgraphs(node, CodeFile.CC_FILE_FUNCTIONDEFINITION, CodeFile.context_names);
+        extractSubgraphs(node, CodeFile.CC_FILE_FUNCTIONSTANDARD, CodeFile.context_names);
+        pos.pop();
+
+        pos.push(0);
+        extractSubgraphs(node, CodeFile.CC_FILE_FUNCTIONDEFINITIONS, CodeFile.context_names);
         pos.pop();
 
         super.visitCodeFile(node);

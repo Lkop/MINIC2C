@@ -65,7 +65,25 @@ public class ASTPrinterVisitor extends ASTVisitor<Integer> {
 
     @Override
     public Integer visitCFunctionDefinition(CFuntionDefinition node) {
-        return super.visitCFunctionDefinition(node);
+    public Integer visitCFunctionDefinition(CFunctionDefinition node) {
+        System.out.println("ASTVisitableElement -> CFunctionDefinition");
+
+        pos.push(0);
+        extractSubgraphs(node, CFunctionDefinition.CT_NAME, CFunctionDefinition.context_names);
+        pos.pop();
+
+        pos.push(0);
+        extractSubgraphs(node, CFunctionDefinition.CT_ARGS, CFunctionDefinition.context_names);
+        pos.pop();
+
+        pos.push(0);
+        extractSubgraphs(node, CFunctionDefinition.CT_BODY, CFunctionDefinition.context_names);
+        pos.pop();
+
+        writer.println("\""+node.getParent(0).getGraphvizName()+"\"->\""+node.getGraphvizName()+"\";");
+
+        super.visitCFunctionDefinition(node);
+        return 0;
     }
 
     @Override

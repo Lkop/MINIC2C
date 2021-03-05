@@ -39,7 +39,11 @@ public class CFileBuilderVisitor extends CodeVisitor<Integer>{
             super.visit(elem);
         }
 
-        for (CodeContainer elem : node.getChildrenInContext(CodeFile.CC_FILE_FUNCTIONDEFINITION)) {
+        for (CodeContainer elem : node.getChildrenInContext(CodeFile.CC_FILE_FUNCTIONSTANDARD)) {
+            super.visit(elem);
+        }
+
+        for (CodeContainer elem : node.getChildrenInContext(CodeFile.CC_FILE_FUNCTIONDEFINITIONS)) {
             super.visit(elem);
         }
 

@@ -62,9 +62,9 @@ public class CodeContainer extends ContextedElement<CodeContainer> {
 }
 
 class CodeFile extends CodeContainer {
-    public static final int CC_FILE_PREPROCESSOR = 0, CC_FILE_GLOBALS = 1, CC_FILE_FUNCTIONDEFINITION = 2;
+    public static final int CC_FILE_PREPROCESSOR = 0, CC_FILE_GLOBALS = 1, CC_FILE_FUNCTIONSTANDARD = 2, CC_FILE_FUNCTIONDEFINITIONS = 3;
     public static final String[] context_names = {
-        "PREPROCESSOR_CONTEXT" ,"GLOBALS_CONTEXT", "FUNDEFS_CONTEXT"
+        "PREPROCESSOR_CONTEXT", "GLOBALS_CONTEXT", "FUNCTIONSTANDARD_CONTEXT", "FUNCTIONDEFINITIONS_CONTEXT"
     };
 
     HashSet<String> st_gvar = new HashSet<>();
@@ -86,6 +86,11 @@ class CodeFile extends CodeContainer {
             repo.addCode("float "+variable+";\n");
             this.addChild(repo);
         }
+    }
+
+    public void addFuntcionStandard(CodeRepository function_standard) {
+        function_standard.addCode(";\n");
+        this.addChild(function_standard);
     }
 
     @Override

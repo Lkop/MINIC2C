@@ -7,6 +7,7 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
     private CodeFile code_file;
     private Stack<CodeContainer> parents = new Stack<>();
     private Stack<Integer> parents_ctx = new Stack<>();
+    private String fun_type = "";
 
     public CodeFile getRoot() {
         return code_file;
@@ -22,7 +23,7 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
 
         new_node.declareGlobalVariable("testvariable");
 
-        CodeMainFunctionDefinition fd = new CodeMainFunctionDefinition(CodeFile.CC_FILE_FUNCTIONDEFINITION);
+        CodeMainFunctionDefinition fd = new CodeMainFunctionDefinition(CodeFile.CC_FILE_FUNCTIONDEFINITIONS);
         new_node.addChild(fd);
 
         parents.push(fd.getMainBody());
@@ -33,27 +34,60 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
         parents_ctx.pop();
         parents.pop();
 
-        return 0;
-    }
-
-    @Override
-    public Integer visitCFunctionDefinition(CFuntionDefinition node) {
-        CodeContainer parent = parents.peek();
-
-        CodeFunctionDefinition new_node = new CodeFunctionDefinition(parents_ctx.peek());
-        parent.addChild(new_node);
-
         parents.push(new_node);
-        parents_ctx.push(CodeFunctionDefinition.CC_FUNCTIONDEFINITION_HEADER);
-        for (ASTElement elem : node.getChildrenInContext(CFuntionDefinition.CT_NAME)) {
+        parents_ctx.push(CodeFile.CC_FILE_FUNCTIONDEFINITIONS);
+        for (ASTElement elem : node.getChildrenInContext(CCompileUnit.CT_COMPILEUNIT_FUNCTIONDEFINITIONS)) {
             super.visit(elem);
         }
         parents_ctx.pop();
         parents.pop();
 
+        return 0;
+    }
+
+    @Override
+    public Integer visitCFunctionDefinition(CFunctionDefinition node) {
+        CodeContainer parent = parents.peek();
+
+        CodeFunctionDefinition new_node = new CodeFunctionDefinition(parents_ctx.peek());
+        parent.addChild(new_node);
+
+        CodeRepository function_header = new CodeRepository(CodeFunctionDefinition.CC_FUNCTIONDEFINITION_HEADER);
+        new_node.addChild(function_header);
+
+        function_header.addCode("float ");
+        fun_type ="CFunctionDefinition_name";
+        parents.push(function_header);
+        parents_ctx.push(CodeFunctionDefinition.CC_FUNCTIONDEFINITION_HEADER);
+        for (ASTElement elem : node.getChildrenInContext(CFunctionDefinition.CT_NAME)) {
+            super.visit(elem);
+        }
+
+        fun_type ="CFunctionDefinition_args";
+        function_header.addCode("(");
+        boolean first_time = true;
+        for (ASTElement elem : node.getChildrenInContext(CFunctionDefinition.CT_ARGS)) {
+            if(first_time){
+                first_time = false;
+            }else{
+                function_header.addCode(", ");
+            }
+            function_header.addCode("float ");
+            super.visit(elem);
+        }
+        parents_ctx.pop();
+        parents.pop();
+        function_header.addCode(")");
+        fun_type ="";
+
+        //Adding header to CFile function standard section
+        CodeRepository function_standard = new CodeRepository(CodeFile.CC_FILE_FUNCTIONSTANDARD);
+        function_standard.addCode(function_header);
+        code_file.addFuntcionStandard(function_standard);
+
         parents.push(new_node);
         parents_ctx.push(CodeFunctionDefinition.CC_FUNCTIONDEFINITION_BODY);
-        for (ASTElement elem : node.getChildrenInContext(CFuntionDefinition.CT_BODY)) {
+        for (ASTElement elem : node.getChildrenInContext(CFunctionDefinition.CT_BODY)) {
             super.visit(elem);
         }
         parents_ctx.pop();
