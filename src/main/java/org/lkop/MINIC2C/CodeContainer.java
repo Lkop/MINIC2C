@@ -145,7 +145,7 @@ class CodeMainFunctionDefinition extends CodeFunctionDefinition {
 class CodeExpressionStatement extends CodeContainer {
     public static final int CB_EXPRESSION_BODY = 0;
     public static final String[] context_names = {
-        "EXPRESSION_BODY"
+        "EXPRESSION_EXPRESSION_BODY"
     };
 
     public CodeExpressionStatement(int context) {
@@ -185,7 +185,7 @@ class CodeReturnStatement extends CodeContainer {
 class CodeIfStatement extends CodeContainer {
     public static final int CB_IF_CONDITION = 0, CB_IF_BODY = 1, CB_ELSE_BODY = 2;
     public static final String[] context_names = {
-        "IF_CONDITION" ,"IF_BODY", "ELSE_BODY"
+        "IF_CONDITION", "IF_BODY", "ELSE_BODY"
     };
 
     public CodeIfStatement(int context) {
@@ -205,7 +205,7 @@ class CodeIfStatement extends CodeContainer {
 class CodeWhileStatement extends CodeContainer {
     public static final int CB_WHILE_CONDITION = 0, CB_WHILE_BODY = 1;
     public static final String[] context_names = {
-        "WHILE_CONDITION" ,"WHILE_BODY"
+        "WHILE_CONDITION", "WHILE_BODY"
     };
 
     public CodeWhileStatement(int context) {
@@ -223,9 +223,9 @@ class CodeWhileStatement extends CodeContainer {
 }
 
 class CodeCompoundStatement extends CodeContainer {
-    public static final int CB_COMPOUND_BODY = 0;
+    public static final int CB_COMPOUND_DECLARATIONS = 0, CB_COMPOUND_BODY = 1;
     public static final String[] context_names = {
-            "CB_COMPOUND_BODY"
+        "CB_COMPOUND_DECLARATIONS", "CB_COMPOUND_BODY"
     };
 
     public CodeCompoundStatement(int context) {
@@ -251,7 +251,7 @@ class CodeCompoundStatement extends CodeContainer {
 class CodeCondition extends CodeContainer {
     public static final int CB_CONDITION = 0;
     public static final String[] context_names = {
-            "CB_CONDITION"
+        "CB_CONDITION"
     };
 
     public CodeCondition(int context) {
