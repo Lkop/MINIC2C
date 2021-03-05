@@ -15,6 +15,8 @@ public class ASTGeneratorVisitor extends MINICParserBaseVisitor<Integer> {
     private Stack<ASTElement> parents = new Stack<>();
     private Stack<Integer> parents_ctx = new Stack<>();
     private HashMap<String, ASTElement> var_st = new HashMap<>();
+    private HashMap<String, ASTElement> fun_st = new HashMap<>();
+    private boolean from_fun = false;
 
     public CCompileUnit getRoot() {
         return root;
@@ -51,6 +53,8 @@ public class ASTGeneratorVisitor extends MINICParserBaseVisitor<Integer> {
         CFunctionDefinition new_node = new CFunctionDefinition(parents_ctx.peek());
         parent.addChild(new_node);
 
+        from_fun = true;
+
         parents.push(new_node);
         parents_ctx.push(CFunctionDefinition.CT_NAME);
         super.visit(ctx.IDENTIFIER());
@@ -70,6 +74,8 @@ public class ASTGeneratorVisitor extends MINICParserBaseVisitor<Integer> {
         super.visit(ctx.compoundStatement());
         parents_ctx.pop();
         parents.pop();
+
+        from_fun = false;
 
         return 0;
     }
@@ -530,11 +536,20 @@ public class ASTGeneratorVisitor extends MINICParserBaseVisitor<Integer> {
                 parent.addChild(new_node);
                 break;
             case MINICLexer.IDENTIFIER:
-                if(var_st.containsKey(node.getText())){
-                    new_node = var_st.get(node.getText());
+                if (from_fun) {
+                    if(fun_st.containsKey(node.getText())){
+                        new_node = fun_st.get(node.getText());
+                    }else{
+                        new_node = new CIDENTIFIER(parents_ctx.peek(), node.getText());
+                        fun_st.put(node.getText(), new_node);
+                    }
                 }else{
-                    new_node = new CIDENTIFIER(parents_ctx.peek(), node.getText());
-                    var_st.put(node.getText(), new_node);
+                    if(var_st.containsKey(node.getText())){
+                        new_node = var_st.get(node.getText());
+                    }else{
+                        new_node = new CIDENTIFIER(parents_ctx.peek(), node.getText());
+                        var_st.put(node.getText(), new_node);
+                    }
                 }
                 parent.addChild(new_node);
                 break;
