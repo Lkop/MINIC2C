@@ -8,11 +8,19 @@ package org.lkop.MINIC2C.lexerparsergenerated;
  * Lexer Rules
  */
 
+INT:'int';
+LONG:'long';
+FLOAT:'float';
+DOUBLE:'double';
+BOOLEAN:'boolean';
+
 FUNCTION :'function';
 RETURN :'return'; 
 IF:'if';
 ELSE:'else';
 WHILE:'while';
+DO:'do';
+FOR:'for';
 BREAK: 'break';
 
 // Operators
@@ -29,11 +37,14 @@ GT:'>';
 LT:'<';
 GTE:'>=';
 LTE:'<=';
-QM:';';
+COLON:':';
+SEMICOLON:';';
 LP:'(';
 RP:')';
 LB:'{';
-RB:'}'; 
+RB:'}';
+LSB:'[';
+RSB:']';
 COMMA:',';
 ASSIGN:'=';
 

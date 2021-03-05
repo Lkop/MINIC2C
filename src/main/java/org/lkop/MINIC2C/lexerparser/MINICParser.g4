@@ -19,12 +19,14 @@ compileUnit : (statement|functionDefinition)+
 functionDefinition : FUNCTION IDENTIFIER LP fargs? RP compoundStatement					
 				   ;
 
-statement : expression QM		#statement_ExpressionStatement
-		  | ifstatement			#statement_IfStatement
-		  | whilestatement		#statement_Whilestatement
-		  | compoundStatement	#statement_CompoundStatement
-		  | RETURN expression QM #statement_ReturnStatement
-		  | BREAK QM			 #statement_BreakStatement
+statement : expression SEMICOLON		    #statement_ExpressionStatement
+		  | ifstatement			            #statement_IfStatement
+		  | whilestatement		            #statement_Whilestatement
+		  | dowhilestatement		        #statement_DoWhileStatement
+		  | forloopstatement		        #statement_ForLoopStatement
+		  | compoundStatement	            #statement_CompoundStatement
+		  | RETURN expression SEMICOLON     #statement_ReturnStatement
+		  | BREAK SEMICOLON			        #statement_BreakStatement
 		  ;
 
 ifstatement : IF LP condition RP statement (ELSE statement)?
@@ -32,6 +34,12 @@ ifstatement : IF LP condition RP statement (ELSE statement)?
 
 whilestatement : WHILE LP condition RP statement
 			   ;
+
+dowhilestatement : DO statement WHILE LP condition RP SEMICOLON
+                 ;
+
+forloopstatement : FOR LP expression SEMICOLON condition SEMICOLON expression RP statement
+                 ;
 
 compoundStatement : LB RB
 				  | LB statementList RB
@@ -45,18 +53,31 @@ condition : expression
 
 expression : NUMBER											            #expr_NUMBER
 		   | IDENTIFIER										            #expr_IDENTIFIER
-		   | IDENTIFIER  LP args RP                                     #expr_FunctionCall
+		   | IDENTIFIER LP args RP                                      #expr_FunctionCall
 		   | expression op=(DIV|MULT) expression 			            #expr_DIVMULT
-            | expression op=(PLUS|MINUS) expression                     #expr_PLUSMINUS
+           | expression op=(PLUS|MINUS) expression                      #expr_PLUSMINUS
 		   | PLUS expression								            #expr_UNARYPLUS
 		   | MINUS expression								            #expr_UNARYMINUS
 		   | LP expression RP								            #expr_PARENTHESIS
+		   | var_declaration                                            #expr_VarDeclaration
 		   | IDENTIFIER ASSIGN expression					            #expr_Assignment
+		   | IDENTIFIER LSB expression RSB ASSIGN expression            #expr_ArrayElemAssignment
 		   | NOT expression									            #expr_NOT
 	       | expression AND expression						            #expr_AND
 		   | expression OR expression						            #expr_OR
 		   | expression op=(GT|GTE|LT|LTE|EQUAL|NEQUAL) expression		#expr_COMPARISON
 		   ;
+
+var_declaration : type IDENTIFIER
+                | type IDENTIFIER LSB NUMBER RSB
+                ;
+
+type : INT
+     | LONG
+     | FLOAT
+     | DOUBLE
+     | BOOLEAN
+     ;
 
 args : (expression (COMMA)?)+
 	 ;
