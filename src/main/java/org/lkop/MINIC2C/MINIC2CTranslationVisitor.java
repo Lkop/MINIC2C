@@ -1,6 +1,10 @@
 package org.lkop.MINIC2C;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Stack;
+
 
 public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
 
@@ -8,6 +12,8 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
     private Stack<CodeContainer> parents = new Stack<>();
     private Stack<Integer> parents_ctx = new Stack<>();
     private String fun_type = "";
+    private CodeCompoundStatement current_compound = null;
+    private List<String> compound_st = new ArrayList<>();
 
     public CodeFile getRoot() {
         return code_file;
@@ -207,6 +213,8 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
         CodeCompoundStatement new_node = new CodeCompoundStatement(parents_ctx.peek());
         parent.addChild(new_node);
 
+        current_compound = new_node;
+
         parents.push(new_node);
         parents_ctx.push(CodeCompoundStatement.CB_COMPOUND_BODY);
         for (ASTElement elem : node.getChildrenInContext(CCompound.CT_COMPOUND_STATEMENTSLIST)) {
@@ -241,8 +249,13 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
     @Override
     public Integer visitCFunctionCall(CFunctionCall node) {
         CodeContainer parent = parents.peek();
+        fun_type = "CFunctionCall_name";
 
         if(parent instanceof CodeRepository) {
+            for (ASTElement elem : node.getChildrenInContext(CFunctionCall.CT_NAME)) {
+                super.visit(elem);
+            }
+            fun_type = "CFunctionCall_args";
             parent.addCode("(");
             for (ASTElement elem : node.getChildrenInContext(CFunctionCall.CT_ARGS)) {
                 super.visit(elem);
@@ -252,16 +265,23 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
             CodeRepository new_node = new CodeRepository(parents_ctx.peek());
             parent.addChild(new_node);
 
-            new_node.addCode("(");
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CFunctionCall.CT_NAME)) {
+                super.visit(elem);
+            }
+            parents.pop();
 
+            fun_type = "CFunctionCall_args";
+            new_node.addCode("(");
             parents.push(new_node);
             for (ASTElement elem : node.getChildrenInContext(CFunctionCall.CT_ARGS)) {
                 super.visit(elem);
             }
             parents.pop();
-
             new_node.addCode(")");
         }
+        fun_type ="";
+
         return 0;
     }
 

@@ -213,6 +213,12 @@ public class ASTGeneratorVisitor extends MINICParserBaseVisitor<Integer> {
         parent.addChild(new_node);
 
         parents.push(new_node);
+        parents_ctx.push(CFunctionCall.CT_NAME);
+        super.visit(ctx.IDENTIFIER());
+        parents_ctx.pop();
+        parents.pop();
+
+        parents.push(new_node);
         parents_ctx.push(CFunctionCall.CT_ARGS);
         super.visit(ctx.args());
         parents_ctx.pop();

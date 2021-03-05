@@ -187,6 +187,10 @@ public class ASTPrinterVisitor extends ASTVisitor<Integer> {
         System.out.println("ASTVisitableElement -> CFunctionCall");
 
         pos.push(0);
+        extractSubgraphs(node, CFunctionCall.CT_NAME, CFunctionCall.context_names);
+        pos.pop();
+
+        pos.push(0);
         extractSubgraphs(node, CFunctionCall.CT_ARGS, CFunctionCall.context_names);
         pos.pop();
 
