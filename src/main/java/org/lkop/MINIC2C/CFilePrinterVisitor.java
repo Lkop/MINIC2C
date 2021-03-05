@@ -160,6 +160,10 @@ public class CFilePrinterVisitor extends CodeVisitor<Integer>{
         System.out.println("CodeVisitableElement -> CodeCompoundStatement");
 
         pos.push(0);
+        extractSubgraphs(node, CodeCompoundStatement.CB_COMPOUND_DECLARATIONS, CodeCompoundStatement.context_names);
+        pos.pop();
+
+        pos.push(0);
         extractSubgraphs(node, CodeCompoundStatement.CB_COMPOUND_BODY, CodeCompoundStatement.context_names);
         pos.pop();
 

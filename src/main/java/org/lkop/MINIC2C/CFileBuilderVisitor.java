@@ -155,6 +155,11 @@ public class CFileBuilderVisitor extends CodeVisitor<Integer>{
 
         c_writer.println("{");
         nesting_lvl++;
+
+        for (CodeContainer elem : node.getChildrenInContext(CodeCompoundStatement.CB_COMPOUND_DECLARATIONS)) {
+            super.visit(elem);
+        }
+
         for (CodeContainer elem : node.getChildrenInContext(CodeCompoundStatement.CB_COMPOUND_BODY)) {
             super.visit(elem);
         }

@@ -232,6 +232,12 @@ class CodeCompoundStatement extends CodeContainer {
         super(CodeNodeType.CB_COMPOUNDSTATEMENT, "CodeCompoundStatement", context);
     }
 
+    public void declareVariable(String variable) {
+        CodeRepository repo = new CodeRepository(CodeCompoundStatement.CB_COMPOUND_DECLARATIONS);
+        repo.addCode("float "+variable+";\n");
+        this.addChild(repo);
+    }
+
     @Override
     public <T> T accept(BaseVisitor<? extends T> visitor) {
         CodeVisitor v = (CodeVisitor)visitor;

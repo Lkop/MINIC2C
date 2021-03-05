@@ -751,15 +751,45 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
     @Override
     public Integer visitCNUMBER(CNUMBER node) {
         CodeContainer parent = parents.peek();
-        parent.addCode(node.getValue());
+
+        if(parent instanceof CodeRepository) {
+            parent.addCode(node.getValue());
+        }else{
+            CodeRepository new_node = new CodeRepository(parents_ctx.peek());
+            parent.addChild(new_node);
+            new_node.addCode(node.getValue());
+        }
         return 0;
     }
 
     @Override
     public Integer visitCIDENTIFIER(CIDENTIFIER node) {
         CodeContainer parent = parents.peek();
-        parent.addCode(node.getValue());
-        code_file.declareGlobalVariable(node.getValue());
+
+        if(parent instanceof CodeRepository) {
+            parent.addCode(node.getValue());
+        }else{
+            CodeRepository new_node = new CodeRepository(parents_ctx.peek());
+            parent.addChild(new_node);
+            new_node.addCode(node.getValue());
+        }
+
+        if(fun_type.equals("CFunctionDefinition_args")){
+            compound_st.add(node.getValue());
+        }
+
+        //current_compound == null --> main_function
+        if(current_compound == null) {
+            if(!fun_type.equals("CFunctionDefinition_name") && !fun_type.equals("CFunctionDefinition_args") && !fun_type.equals("CFunctionCall_name")) {
+                code_file.declareGlobalVariable(node.getValue());
+            }
+        }else{
+            if(!fun_type.equals("CFunctionDefinition_name") && !fun_type.equals("CFunctionDefinition_args")
+                    && !fun_type.equals("CFunctionCall_name")&& !compound_st.contains(node.getValue())) {
+                current_compound.declareVariable(node.getValue());
+                compound_st.add(node.getValue());
+            }
+        }
         return 0;
     }
 }
