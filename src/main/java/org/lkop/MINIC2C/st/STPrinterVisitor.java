@@ -84,6 +84,26 @@ public class STPrinterVisitor extends MINICParserBaseVisitor {
     }
 
     @Override
+    public Integer visitStatement_DoWhileStatement(MINICParser.Statement_DoWhileStatementContext ctx) {
+        String label = "Statement_DoWhilestatement"+"_" + serial_ounter++;
+        writer.println("\""+parent_label.peek()+"\"->\""+label+"\";");
+        parent_label.push(label);
+        super.visitStatement_DoWhileStatement(ctx);
+        parent_label.pop();
+        return 0;
+    }
+
+    @Override
+    public Integer visitStatement_ForLoopStatement(MINICParser.Statement_ForLoopStatementContext ctx) {
+        String label = "Statement_ForLoopStatement"+"_" + serial_ounter++;
+        writer.println("\""+parent_label.peek()+"\"->\""+label+"\";");
+        parent_label.push(label);
+        super.visitStatement_ForLoopStatement(ctx);
+        parent_label.pop();
+        return 0;
+    }
+
+    @Override
     public Integer visitStatement_CompoundStatement(MINICParser.Statement_CompoundStatementContext ctx) {
         String label = "Statement_CompoundStatement"+"_" + serial_ounter++;
         writer.println("\""+parent_label.peek()+"\"->\""+label+"\";");
@@ -129,6 +149,26 @@ public class STPrinterVisitor extends MINICParserBaseVisitor {
         writer.println("\""+parent_label.peek()+"\"->\""+label+"\";");
         parent_label.push(label);
         super.visitWhilestatement(ctx);
+        parent_label.pop();
+        return 0;
+    }
+
+    @Override
+    public Object visitDowhilestatement(MINICParser.DowhilestatementContext ctx) {
+        String label = "Dowhile_Statement"+"_" + serial_ounter++;
+        writer.println("\""+parent_label.peek()+"\"->\""+label+"\";");
+        parent_label.push(label);
+        super.visitDowhilestatement(ctx);
+        parent_label.pop();
+        return 0;
+    }
+
+    @Override
+    public Object visitForloopstatement(MINICParser.ForloopstatementContext ctx) {
+        String label = "Forloop_Statement"+"_" + serial_ounter++;
+        writer.println("\""+parent_label.peek()+"\"->\""+label+"\";");
+        parent_label.push(label);
+        super.visitForloopstatement(ctx);
         parent_label.pop();
         return 0;
     }
@@ -250,6 +290,16 @@ public class STPrinterVisitor extends MINICParserBaseVisitor {
     }
 
     @Override
+    public Integer visitExpr_ArrayElementAssignment(MINICParser.Expr_ArrayElementAssignmentContext ctx) {
+        String label = "ArrayElemAssignment"+"_" + serial_ounter++;
+        writer.println("\""+parent_label.peek()+"\"->\""+label+"\";");
+        parent_label.push(label);
+        super.visitExpr_ArrayElementAssignment(ctx);
+        parent_label.pop();
+        return 0;
+    }
+
+    @Override
     public Integer visitExpr_NOT(MINICParser.Expr_NOTContext ctx) {
         String label = "NOT"+"_" + serial_ounter++;
         writer.println("\""+parent_label.peek()+"\"->\""+label+"\";");
@@ -305,6 +355,26 @@ public class STPrinterVisitor extends MINICParserBaseVisitor {
         writer.println("\""+parent_label.peek()+"\"->\""+label+"\";");
         parent_label.push(label);
         super.visitExpr_COMPARISON(ctx);
+        parent_label.pop();
+        return 0;
+    }
+
+    @Override
+    public Integer visitDeclaration_Array(MINICParser.Declaration_ArrayContext ctx) {
+        String label = "Declaration_Array"+"_" + serial_ounter++;
+        writer.println("\""+parent_label.peek()+"\"->\""+label+"\";");
+        parent_label.push(label);
+        super.visitDeclaration_Array(ctx);
+        parent_label.pop();
+        return 0;
+    }
+
+    @Override
+    public Integer visitDeclaration_TypeArray(MINICParser.Declaration_TypeArrayContext ctx) {
+        String label = "Declaration_TypeArray"+"_" + serial_ounter++;
+        writer.println("\""+parent_label.peek()+"\"->\""+label+"\";");
+        parent_label.push(label);
+        super.visitDeclaration_TypeArray(ctx);
         parent_label.pop();
         return 0;
     }

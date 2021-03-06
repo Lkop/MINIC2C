@@ -41,15 +41,15 @@ dowhilestatement : DO statement WHILE LP condition RP SEMICOLON
 forloopstatement : FOR LP expression SEMICOLON condition SEMICOLON expression RP statement
                  ;
 
+condition : expression
+          ;
+
 compoundStatement : LB RB
 				  | LB statementList RB
 				  ;
 
 statementList : (statement)+ 
 			  ;
-
-condition : expression
-          ;
 
 expression : NUMBER											            #expr_NUMBER
 		   | IDENTIFIER										            #expr_IDENTIFIER
@@ -61,22 +61,22 @@ expression : NUMBER											            #expr_NUMBER
 		   | LP expression RP								            #expr_PARENTHESIS
 		   | var_declaration                                            #expr_VarDeclaration
 		   | IDENTIFIER ASSIGN expression					            #expr_Assignment
-		   | IDENTIFIER LSB expression RSB ASSIGN expression            #expr_ArrayElemAssignment
+		   | IDENTIFIER LSB expression RSB ASSIGN expression            #expr_ArrayElementAssignment
 		   | NOT expression									            #expr_NOT
 	       | expression AND expression						            #expr_AND
 		   | expression OR expression						            #expr_OR
 		   | expression op=(GT|GTE|LT|LTE|EQUAL|NEQUAL) expression		#expr_COMPARISON
 		   ;
 
-var_declaration : type IDENTIFIER
-                | type IDENTIFIER LSB NUMBER RSB
+var_declaration : type IDENTIFIER                                       #declaration_TypeVariable
+                | IDENTIFIER LSB NUMBER RSB (ASSIGN LB args RB)?        #declaration_Array
+                | type IDENTIFIER LSB NUMBER RSB                        #declaration_TypeArray
                 ;
 
 type : INT
      | LONG
      | FLOAT
      | DOUBLE
-     | BOOLEAN
      ;
 
 args : (expression (COMMA)?)+

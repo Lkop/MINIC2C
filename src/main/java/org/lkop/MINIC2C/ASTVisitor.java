@@ -33,6 +33,14 @@ public abstract class ASTVisitor<T> extends BaseVisitor<T> {
         return super.visitChildren(node);
     }
 
+    public T visitCDoWhile(CDoWhile node) {
+        return super.visitChildren(node);
+    }
+
+    public T visitCForLoop(CForLoop node) {
+        return super.visitChildren(node);
+    }
+
     public T visitCCompound(CCompound node) {
         return super.visitChildren(node);
     }
@@ -73,6 +81,10 @@ public abstract class ASTVisitor<T> extends BaseVisitor<T> {
         return super.visitChildren(node);
     }
 
+    public T visitCArrayElementAssignment(CArrayElementAssignment node) {
+        return super.visitChildren(node);
+    }
+
     public T visitCNot(CNot node) {
         return super.visitChildren(node);
     }
@@ -106,6 +118,10 @@ public abstract class ASTVisitor<T> extends BaseVisitor<T> {
     }
 
     public T visitCNequal(CNequal node) {
+        return super.visitChildren(node);
+    }
+
+    public T visitCDeclarationArray(CDeclarationArray node) {
         return super.visitChildren(node);
     }
 

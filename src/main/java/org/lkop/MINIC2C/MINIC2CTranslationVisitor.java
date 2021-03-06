@@ -1,7 +1,6 @@
 package org.lkop.MINIC2C;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
@@ -11,7 +10,7 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
     private CodeFile code_file;
     private Stack<CodeContainer> parents = new Stack<>();
     private Stack<Integer> parents_ctx = new Stack<>();
-    private String fun_type = "";
+    private String parent_type = "";
     private CodeCompoundStatement current_compound = null;
     private List<String> compound_st = new ArrayList<>();
 
@@ -62,14 +61,14 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
         new_node.addChild(function_header);
 
         function_header.addCode("float ");
-        fun_type ="CFunctionDefinition_name";
+        parent_type ="CFunctionDefinition_name";
         parents.push(function_header);
         parents_ctx.push(CodeFunctionDefinition.CC_FUNCTIONDEFINITION_HEADER);
         for (ASTElement elem : node.getChildrenInContext(CFunctionDefinition.CT_NAME)) {
             super.visit(elem);
         }
 
-        fun_type ="CFunctionDefinition_args";
+        parent_type ="CFunctionDefinition_args";
         function_header.addCode("(");
         boolean first_time = true;
         for (ASTElement elem : node.getChildrenInContext(CFunctionDefinition.CT_ARGS)) {
@@ -84,7 +83,7 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
         parents_ctx.pop();
         parents.pop();
         function_header.addCode(")");
-        fun_type ="";
+        parent_type ="";
 
         //Adding header to CFile function standard section
         CodeRepository function_standard = new CodeRepository(CodeFile.CC_FILE_FUNCTIONSTANDARD);
@@ -149,12 +148,24 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
 
     @Override
     public Integer visitCBreakStatement(CBreakStatement node) {
-        return super.visitCBreakStatement(node);
+        CodeContainer parent = parents.peek();
+
+        if(parent instanceof CodeRepository) {
+            parent.addCode("break;\n");
+        }else{
+            CodeRepository new_node = new CodeRepository(parents_ctx.peek());
+            parent.addChild(new_node);
+
+            new_node.addCode("break;\n");
+        }
+        return 0;
     }
 
     @Override
     public Integer visitCIf(CIf node) {
         CodeContainer parent = parents.peek();
+
+        parent_type ="CIf";
 
         CodeIfStatement new_node = new CodeIfStatement(parents_ctx.peek());
         parent.addChild(new_node);
@@ -174,6 +185,16 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
         }
         parents_ctx.pop();
         parents.pop();
+
+        parents.push(new_node);
+        parents_ctx.push(CodeIfStatement.CB_ELSE_BODY);
+        for (ASTElement elem : node.getChildrenInContext(CIf.CT_ELSE_STATEMENT)) {
+            super.visit(elem);
+        }
+        parents_ctx.pop();
+        parents.pop();
+
+        parent_type ="";
 
         parent.addCode(new_node);
         return 0;
@@ -197,6 +218,76 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
         parents.push(new_node);
         parents_ctx.push(CodeWhileStatement.CB_WHILE_BODY);
         for (ASTElement elem : node.getChildrenInContext(CWhile.CT_WHILE_STATEMENT)) {
+            super.visit(elem);
+        }
+        parents_ctx.pop();
+        parents.pop();
+
+        parent.addCode(new_node);
+        return 0;
+    }
+
+    @Override
+    public Integer visitCDoWhile(CDoWhile node) {
+        CodeContainer parent = parents.peek();
+
+        CodeDoWhileStatement new_node = new CodeDoWhileStatement(parents_ctx.peek());
+        parent.addChild(new_node);
+
+        parents.push(new_node);
+        parents_ctx.push(CodeDoWhileStatement.CB_DOWHILE_BODY);
+        for (ASTElement elem : node.getChildrenInContext(CDoWhile.CT_DOWHILE_STATEMENT)) {
+            super.visit(elem);
+        }
+        parents_ctx.pop();
+        parents.pop();
+
+        parents.push(new_node);
+        parents_ctx.push(CodeDoWhileStatement.CB_DOWHILE_CONDITION);
+        for (ASTElement elem : node.getChildrenInContext(CDoWhile.CT_DOWHILE_CONDITION)) {
+            super.visit(elem);
+        }
+        parents_ctx.pop();
+        parents.pop();
+
+        parent.addCode(new_node);
+        return 0;
+    }
+
+    @Override
+    public Integer visitCForLoop(CForLoop node) {
+        CodeContainer parent = parents.peek();
+
+        CodeForLoopStatement new_node = new CodeForLoopStatement(parents_ctx.peek());
+        parent.addChild(new_node);
+
+        parents.push(new_node);
+        parents_ctx.push(CodeForLoopStatement.CB_FORLOOP_INITIALIZATION);
+        for (ASTElement elem : node.getChildrenInContext(CForLoop.CT_FORLOOP_INITIALIZATION)) {
+            super.visit(elem);
+        }
+        parents_ctx.pop();
+        parents.pop();
+
+        parents.push(new_node);
+        parents_ctx.push(CodeForLoopStatement.CB_FORLOOP_CONDITION);
+        for (ASTElement elem : node.getChildrenInContext(CForLoop.CT_FORLOOP_CONDITION)) {
+            super.visit(elem);
+        }
+        parents_ctx.pop();
+        parents.pop();
+
+        parents.push(new_node);
+        parents_ctx.push(CodeForLoopStatement.CB_FORLOOP_INCREMENT);
+        for (ASTElement elem : node.getChildrenInContext(CForLoop.CT_FORLOOP_INCREMENT)) {
+            super.visit(elem);
+        }
+        parents_ctx.pop();
+        parents.pop();
+
+        parents.push(new_node);
+        parents_ctx.push(CodeForLoopStatement.CB_FORLOOP_BODY);
+        for (ASTElement elem : node.getChildrenInContext(CForLoop.CT_FORLOOP_STATEMENT)) {
             super.visit(elem);
         }
         parents_ctx.pop();
@@ -249,13 +340,13 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
     @Override
     public Integer visitCFunctionCall(CFunctionCall node) {
         CodeContainer parent = parents.peek();
-        fun_type = "CFunctionCall_name";
+        parent_type = "CFunctionCall_name";
 
         if(parent instanceof CodeRepository) {
             for (ASTElement elem : node.getChildrenInContext(CFunctionCall.CT_NAME)) {
                 super.visit(elem);
             }
-            fun_type = "CFunctionCall_args";
+            parent_type = "CFunctionCall_args";
             parent.addCode("(");
             for (ASTElement elem : node.getChildrenInContext(CFunctionCall.CT_ARGS)) {
                 super.visit(elem);
@@ -271,7 +362,7 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
             }
             parents.pop();
 
-            fun_type = "CFunctionCall_args";
+            parent_type = "CFunctionCall_args";
             new_node.addCode("(");
             parents.push(new_node);
             for (ASTElement elem : node.getChildrenInContext(CFunctionCall.CT_ARGS)) {
@@ -280,7 +371,7 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
             parents.pop();
             new_node.addCode(")");
         }
-        fun_type ="";
+        parent_type ="";
 
         return 0;
     }
@@ -491,6 +582,55 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
 
             parents.push(new_node);
             for (ASTElement elem : node.getChildrenInContext(CAssignment.CT_RIGHT)) {
+                super.visit(elem);
+            }
+            parents.pop();
+        }
+        return 0;
+    }
+
+    @Override
+    public Integer visitCArrayElementAssignment(CArrayElementAssignment node) {
+        CodeContainer parent = parents.peek();
+
+        if(parent instanceof CodeRepository) {
+            for (ASTElement elem : node.getChildrenInContext(CArrayElementAssignment.CT_ARRAY)) {
+                super.visit(elem);
+            }
+
+            parent.addCode("[");
+            for (ASTElement elem : node.getChildrenInContext(CArrayElementAssignment.CT_POSITION)) {
+                super.visit(elem);
+            }
+            parent.addCode("]");
+
+            parent.addCode("=");
+
+            for (ASTElement elem : node.getChildrenInContext(CArrayElementAssignment.CT_RIGHT)) {
+                super.visit(elem);
+            }
+        }else {
+            CodeRepository new_node = new CodeRepository(parents_ctx.peek());
+            parent.addChild(new_node);
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CArrayElementAssignment.CT_ARRAY)) {
+                super.visit(elem);
+            }
+            parents.pop();
+
+            new_node.addCode("[");
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CArrayElementAssignment.CT_POSITION)) {
+                super.visit(elem);
+            }
+            parents.pop();
+            new_node.addCode("]");
+
+            new_node.addCode("=");
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CArrayElementAssignment.CT_RIGHT)) {
                 super.visit(elem);
             }
             parents.pop();
@@ -769,6 +909,70 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
     }
 
     @Override
+    public Integer visitCDeclarationArray(CDeclarationArray node) {
+        CodeContainer parent = parents.peek();
+
+        if(parent instanceof CodeRepository) {
+            for (ASTElement elem : node.getChildrenInContext(CDeclarationArray.CT_NAME)) {
+                super.visit(elem);
+            }
+            parent.addCode("[");
+            for (ASTElement elem : node.getChildrenInContext(CDeclarationArray.CT_NUMELEMENTS)) {
+                super.visit(elem);
+            }
+            parent.addCode("]");
+
+            if(node.getChildrenInContext(CDeclarationArray.CT_ELEMENTS).size()>0){
+                boolean first_time = true;
+                parent.addCode("={");
+                for (ASTElement elem : node.getChildrenInContext(CDeclarationArray.CT_ELEMENTS)) {
+                    if(first_time){
+                        first_time = false;
+                    }else {
+                        parent.addCode(",");
+                    }
+                    super.visit(elem);
+                }
+                parent.addCode("}");
+            }
+        }else{
+            CodeRepository new_node = new CodeRepository(parents_ctx.peek());
+            parent.addChild(new_node);
+
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CDeclarationArray.CT_NAME)) {
+                super.visit(elem);
+            }
+            parents.pop();
+
+            new_node.addCode("[");
+            parents.push(new_node);
+            for (ASTElement elem : node.getChildrenInContext(CDeclarationArray.CT_NUMELEMENTS)) {
+                super.visit(elem);
+            }
+            parents.pop();
+            new_node.addCode("]");
+
+            if(node.getChildrenInContext(CDeclarationArray.CT_ELEMENTS).size()>0){
+                boolean first_time = true;
+                new_node.addCode("={");
+                parents.push(new_node);
+                for (ASTElement elem : node.getChildrenInContext(CDeclarationArray.CT_ELEMENTS)) {
+                    if(first_time){
+                        first_time = false;
+                    }else {
+                        new_node.addCode(",");
+                    }
+                    super.visit(elem);
+                }
+                parents.pop();
+                new_node.addCode("}");
+            }
+        }
+        return 0;
+    }
+
+    @Override
     public Integer visitCNUMBER(CNUMBER node) {
         CodeContainer parent = parents.peek();
 
@@ -794,20 +998,27 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
             new_node.addCode(node.getValue());
         }
 
-        if(fun_type.equals("CFunctionDefinition_args")){
+        if(parent_type.equals("CFunctionDefinition_args")){
             compound_st.add(node.getValue());
         }
 
         //current_compound == null --> main_function
         if(current_compound == null) {
-            if(!fun_type.equals("CFunctionDefinition_name") && !fun_type.equals("CFunctionDefinition_args") && !fun_type.equals("CFunctionCall_name")) {
+            if(!parent_type.equals("CFunctionDefinition_name") && !parent_type.equals("CFunctionDefinition_args")
+                    && !parent_type.equals("CFunctionCall_name")) {
                 code_file.declareGlobalVariable(node.getValue());
             }
         }else{
-            if(!fun_type.equals("CFunctionDefinition_name") && !fun_type.equals("CFunctionDefinition_args")
-                    && !fun_type.equals("CFunctionCall_name")&& !compound_st.contains(node.getValue())) {
-                current_compound.declareVariable(node.getValue());
-                compound_st.add(node.getValue());
+            if(!parent_type.equals("CFunctionDefinition_name") && !parent_type.equals("CFunctionDefinition_args")
+                    && !parent_type.equals("CFunctionCall_name") && !parent_type.equals("CIf")) {
+                    if (!compound_st.contains(node.getValue())) {
+                        current_compound.declareVariable(node.getValue());
+                        compound_st.add(node.getValue());
+                    }
+            }else{
+                if(parent_type.equals("CIf")) {
+                    code_file.declareGlobalVariable(node.getValue());
+                }
             }
         }
         return 0;

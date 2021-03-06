@@ -130,10 +130,6 @@ class CReturnStatement extends ASTElement {
 }
 
 class CBreakStatement extends ASTElement {
-    public static final int CT_BREAK = 0;
-    public static String[] context_names = {
-        "BREAK"
-    };
 
     public CBreakStatement(int context) {
         super(ASTNodeType.NT_BREAKSTATEMENT, "CBreakStatement", context);
@@ -184,6 +180,46 @@ class CWhile extends ASTElement {
         ASTVisitor v = (ASTVisitor)visitor;
         if (v != null) {
             return (T) v.visitCWhile(this);
+        }
+        return null;
+    }
+}
+
+class CDoWhile extends ASTElement {
+    public static final int CT_DOWHILE_STATEMENT = 0, CT_DOWHILE_CONDITION = 1;
+    public static final String[] context_names = {
+        "DOWHILE_STATEMENT_CONTEXT", "DOWHILE_CONDITION_CONTEXT"
+    };
+
+    public CDoWhile(int context) {
+        super(ASTNodeType.NT_DOWHILESTATEMENT, "CDoWhile", context);
+    }
+
+    @Override
+    public <T> T accept(BaseVisitor<? extends T> visitor) {
+        ASTVisitor v = (ASTVisitor)visitor;
+        if (v != null) {
+            return (T) v.visitCDoWhile(this);
+        }
+        return null;
+    }
+}
+
+class CForLoop extends ASTElement {
+    public static final int CT_FORLOOP_INITIALIZATION = 0, CT_FORLOOP_CONDITION = 1, CT_FORLOOP_INCREMENT = 2, CT_FORLOOP_STATEMENT = 3;
+    public static final String[] context_names = {
+        "FORLOOP_INITIALIZATION_CONTEXT", "FORLOOP_CONDITION_CONTEXT", "FORLOOP_INCREMENT_CONTEXT", "FORLOOP_STATEMENT_CONTEXT"
+    };
+
+    public CForLoop(int context) {
+        super(ASTNodeType.NT_FORLOOPSTATEMENT, "CForLoop", context);
+    }
+
+    @Override
+    public <T> T accept(BaseVisitor<? extends T> visitor) {
+        ASTVisitor v = (ASTVisitor)visitor;
+        if (v != null) {
+            return (T) v.visitCForLoop(this);
         }
         return null;
     }
@@ -389,6 +425,26 @@ class CAssignment extends ASTElement {
     }
 }
 
+class CArrayElementAssignment extends ASTElement {
+    public static final int CT_ARRAY = 0, CT_POSITION = 1, CT_RIGHT = 2;
+    public static final String[] context_names = {
+        "ARRAYELEMENTASSIGNMENT_ARRAY_CONTEXT", "ARRAYELEMENTASSIGNMENT_POSITION_CONTEXT", "ARRAYELEMENTASSIGNMENT_RIGHT_CONTEXT",
+    };
+
+    public CArrayElementAssignment(int context) {
+        super(ASTNodeType.NT_ARRAYELEMENTASSIGNMENT, "CArrayElementAssignment", context);
+    }
+
+    @Override
+    public <T> T accept(BaseVisitor<? extends T> visitor) {
+        ASTVisitor v = (ASTVisitor)visitor;
+        if (v != null) {
+            return (T) v.visitCArrayElementAssignment(this);
+        }
+        return null;
+    }
+}
+
 class CNot extends ASTElement {
     public static final int  CT_RIGHT = 0;
     public static final String[] context_names = {
@@ -564,6 +620,26 @@ class CNequal extends ASTElement {
         ASTVisitor v = (ASTVisitor)visitor;
         if (v != null) {
             return (T) v.visitCNequal(this);
+        }
+        return null;
+    }
+}
+
+class CDeclarationArray extends ASTElement {
+    public static final int  CT_NAME = 0, CT_NUMELEMENTS = 1, CT_ELEMENTS = 2;
+    public static final String[] context_names = {
+        "DECLARATIONARRAY_NAME_CONTEXT", "DECLARATIONARRAY_NUMELEMENTS_CONTEXT", "DECLARATIONARRAY_ELEMENTS_CONTEXT"
+    };
+
+    public CDeclarationArray(int context) {
+        super(ASTNodeType.NT_DECLARATION_ARRAY, "CDeclarationArray", context);
+    }
+
+    @Override
+    public <T> T accept(BaseVisitor<? extends T> visitor) {
+        ASTVisitor v = (ASTVisitor)visitor;
+        if (v != null) {
+            return (T) v.visitCDeclarationArray(this);
         }
         return null;
     }

@@ -20,11 +20,19 @@ public class CodeVisitor<T> extends BaseVisitor<T> {
         return super.visitChildren(node);
     }
 
+    public T visitCodeIfStatement(CodeIfStatement node) {
+        return super.visitChildren(node);
+    }
+
     public T visitCodeWhileStatement(CodeWhileStatement node) {
         return super.visitChildren(node);
     }
 
-    public T visitCodeIfStatement(CodeIfStatement node) {
+    public T visitCodeDoWhileStatement(CodeDoWhileStatement node) {
+        return super.visitChildren(node);
+    }
+
+    public T visitCodeForLoopStatement(CodeForLoopStatement node) {
         return super.visitChildren(node);
     }
 

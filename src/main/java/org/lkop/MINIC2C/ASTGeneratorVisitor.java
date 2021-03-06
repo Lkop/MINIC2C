@@ -119,13 +119,6 @@ public class ASTGeneratorVisitor extends MINICParserBaseVisitor<Integer> {
         CBreakStatement new_node = new CBreakStatement(parents_ctx.peek());
         parent.addChild(new_node);
 
-        //TODO remove
-        parents.push(new_node);
-        parents_ctx.push(CBreakStatement.CT_BREAK);
-        super.visit(ctx.BREAK());
-        parents_ctx.pop();
-        parents.pop();
-
         return 0;
     }
 
@@ -148,6 +141,14 @@ public class ASTGeneratorVisitor extends MINICParserBaseVisitor<Integer> {
         parents_ctx.pop();
         parents.pop();
 
+        if(ctx.statement(1) != null) {
+            parents.push(new_node);
+            parents_ctx.push(CIf.CT_ELSE_STATEMENT);
+            super.visit(ctx.statement(1));
+            parents_ctx.pop();
+            parents.pop();
+        }
+
         return 0;
     }
 
@@ -166,6 +167,62 @@ public class ASTGeneratorVisitor extends MINICParserBaseVisitor<Integer> {
 
         parents.push(new_node);
         parents_ctx.push(CWhile.CT_WHILE_STATEMENT);
+        super.visit(ctx.statement());
+        parents_ctx.pop();
+        parents.pop();
+
+        return 0;
+    }
+
+    @Override
+    public Integer visitDowhilestatement(MINICParser.DowhilestatementContext ctx) {
+        ASTElement parent = parents.peek();
+
+        CDoWhile new_node = new CDoWhile(parents_ctx.peek());
+        parent.addChild(new_node);
+
+        parents.push(new_node);
+        parents_ctx.push(CDoWhile.CT_DOWHILE_STATEMENT);
+        super.visit(ctx.statement());
+        parents_ctx.pop();
+        parents.pop();
+
+        parents.push(new_node);
+        parents_ctx.push(CDoWhile.CT_DOWHILE_CONDITION);
+        super.visit(ctx.condition());
+        parents_ctx.pop();
+        parents.pop();
+
+        return 0;
+    }
+
+    @Override
+    public Integer visitForloopstatement(MINICParser.ForloopstatementContext ctx) {
+        ASTElement parent = parents.peek();
+
+        CForLoop new_node = new CForLoop(parents_ctx.peek());
+        parent.addChild(new_node);
+
+        parents.push(new_node);
+        parents_ctx.push(CForLoop.CT_FORLOOP_INITIALIZATION);
+        super.visit(ctx.expression(0));
+        parents_ctx.pop();
+        parents.pop();
+
+        parents.push(new_node);
+        parents_ctx.push(CForLoop.CT_FORLOOP_CONDITION);
+        super.visit(ctx.condition());
+        parents_ctx.pop();
+        parents.pop();
+
+        parents.push(new_node);
+        parents_ctx.push(CForLoop.CT_FORLOOP_INCREMENT);
+        super.visit(ctx.expression(1));
+        parents_ctx.pop();
+        parents.pop();
+
+        parents.push(new_node);
+        parents_ctx.push(CForLoop.CT_FORLOOP_STATEMENT);
         super.visit(ctx.statement());
         parents_ctx.pop();
         parents.pop();
@@ -366,6 +423,34 @@ public class ASTGeneratorVisitor extends MINICParserBaseVisitor<Integer> {
     }
 
     @Override
+    public Integer visitExpr_ArrayElementAssignment(MINICParser.Expr_ArrayElementAssignmentContext ctx) {
+        ASTElement parent = parents.peek();
+
+        CArrayElementAssignment new_node = new CArrayElementAssignment(parents_ctx.peek());
+        parent.addChild(new_node);
+
+        parents.push(new_node);
+        parents_ctx.push(CArrayElementAssignment.CT_ARRAY);
+        super.visit(ctx.IDENTIFIER());
+        parents_ctx.pop();
+        parents.pop();
+
+        parents.push(new_node);
+        parents_ctx.push(CArrayElementAssignment.CT_POSITION);
+        super.visit(ctx.expression(0));
+        parents_ctx.pop();
+        parents.pop();
+
+        parents.push(new_node);
+        parents_ctx.push(CArrayElementAssignment.CT_RIGHT);
+        super.visit(ctx.expression(1));
+        parents_ctx.pop();
+        parents.pop();
+
+        return 0;
+    }
+
+    @Override
     public Integer visitExpr_NOT(MINICParser.Expr_NOTContext ctx) {
         ASTElement parent = parents.peek();
 
@@ -529,6 +614,41 @@ public class ASTGeneratorVisitor extends MINICParserBaseVisitor<Integer> {
                 break;
         }
         return 0;
+    }
+
+    @Override
+    public Integer visitDeclaration_Array(MINICParser.Declaration_ArrayContext ctx) {
+        ASTElement parent = parents.peek();
+
+        CDeclarationArray new_node = new CDeclarationArray(parents_ctx.peek());
+        parent.addChild(new_node);
+
+        parents.push(new_node);
+        parents_ctx.push(CDeclarationArray.CT_NAME);
+        super.visit(ctx.IDENTIFIER());
+        parents_ctx.pop();
+        parents.pop();
+
+        parents.push(new_node);
+        parents_ctx.push(CDeclarationArray.CT_NUMELEMENTS);
+        super.visit(ctx.NUMBER());
+        parents_ctx.pop();
+        parents.pop();
+
+        if (ctx.args() != null) {
+            parents.push(new_node);
+            parents_ctx.push(CDeclarationArray.CT_ELEMENTS);
+            super.visit(ctx.args());
+            parents_ctx.pop();
+            parents.pop();
+        }
+
+        return 0;
+    }
+
+    @Override
+    public Integer visitDeclaration_TypeArray(MINICParser.Declaration_TypeArrayContext ctx) {
+        return super.visitDeclaration_TypeArray(ctx);
     }
 
     @Override

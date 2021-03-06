@@ -12,8 +12,10 @@ public enum ASTNodeType {
 
         NT_IFSTATEMENT,
         NT_WHILESTATEMENT,
-        NT_COMPOUNDSTATEMENT,
+        NT_DOWHILESTATEMENT,
+        NT_FORLOOPSTATEMENT,
         NT_CONDITION,
+        NT_COMPOUNDSTATEMENT,
 
         NT_FUNCTIONCALL,
         NT_DIVISION,
@@ -23,6 +25,7 @@ public enum ASTNodeType {
         NT_UNARYPLUS,
         NT_UNARYMINUS,
         NT_ASSIGNMENT,
+        NT_ARRAYELEMENTASSIGNMENT,
         NT_NOT,
         NT_AND,
         NT_OR,
@@ -32,6 +35,10 @@ public enum ASTNodeType {
         NT_LTE,
         NT_EQUAL,
         NT_NEQUAL,
+
+        NT_DECLARATION_ARRAY,
+        NT_DECLARATION_TYPEARRAY,
+
         NT_IDENTIFIER,
         NT_NUMBER
 }

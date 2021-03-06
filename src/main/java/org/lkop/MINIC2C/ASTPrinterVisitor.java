@@ -115,7 +115,12 @@ public class ASTPrinterVisitor extends ASTVisitor<Integer> {
 
     @Override
     public Integer visitCBreakStatement(CBreakStatement node) {
-        return super.visitCBreakStatement(node);
+        System.out.println("ASTVisitableElement -> CBreakStatement");
+
+        writer.println("\""+node.getParent(0).getGraphvizName()+"\"->\""+node.getGraphvizName()+"\";");
+
+        super.visitCBreakStatement(node);
+        return 0;
     }
 
     @Override
@@ -128,6 +133,10 @@ public class ASTPrinterVisitor extends ASTVisitor<Integer> {
 
         pos.push(0);
         extractSubgraphs(node, CIf.CT_IF_STATEMENT, CIf.context_names);
+        pos.pop();
+
+        pos.push(0);
+        extractSubgraphs(node, CIf.CT_ELSE_STATEMENT, CIf.context_names);
         pos.pop();
 
         writer.println("\""+node.getParent(0).getGraphvizName()+"\"->\""+node.getGraphvizName()+"\";");
@@ -151,6 +160,50 @@ public class ASTPrinterVisitor extends ASTVisitor<Integer> {
         writer.println("\""+node.getParent(0).getGraphvizName()+"\"->\""+node.getGraphvizName()+"\";");
 
         super.visitCWhile(node);
+        return 0;
+    }
+
+    @Override
+    public Integer visitCDoWhile(CDoWhile node) {
+        System.out.println("ASTVisitableElement -> CDoWhile");
+
+        pos.push(0);
+        extractSubgraphs(node, CDoWhile.CT_DOWHILE_STATEMENT, CDoWhile.context_names);
+        pos.pop();
+
+        pos.push(0);
+        extractSubgraphs(node, CDoWhile.CT_DOWHILE_CONDITION, CDoWhile.context_names);
+        pos.pop();
+
+        writer.println("\""+node.getParent(0).getGraphvizName()+"\"->\""+node.getGraphvizName()+"\";");
+
+        super.visitCDoWhile(node);
+        return 0;
+    }
+
+    @Override
+    public Integer visitCForLoop(CForLoop node) {
+        System.out.println("ASTVisitableElement -> CForLoop");
+
+        pos.push(0);
+        extractSubgraphs(node, CForLoop.CT_FORLOOP_INITIALIZATION, CForLoop.context_names);
+        pos.pop();
+
+        pos.push(0);
+        extractSubgraphs(node, CForLoop.CT_FORLOOP_CONDITION, CForLoop.context_names);
+        pos.pop();
+
+        pos.push(0);
+        extractSubgraphs(node, CForLoop.CT_FORLOOP_INCREMENT, CForLoop.context_names);
+        pos.pop();
+
+        pos.push(0);
+        extractSubgraphs(node, CForLoop.CT_FORLOOP_STATEMENT, CForLoop.context_names);
+        pos.pop();
+
+        writer.println("\""+node.getParent(0).getGraphvizName()+"\"->\""+node.getGraphvizName()+"\";");
+
+        super.visitCForLoop(node);
         return 0;
     }
 
@@ -312,6 +365,27 @@ public class ASTPrinterVisitor extends ASTVisitor<Integer> {
     }
 
     @Override
+    public Integer visitCArrayElementAssignment(CArrayElementAssignment node) {
+        System.out.println("ASTVisitableElement -> CArrayElementAssignment");
+
+        pos.push(0);
+        extractSubgraphs(node, CArrayElementAssignment.CT_ARRAY, CArrayElementAssignment.context_names);
+        pos.pop();
+
+        pos.push(0);
+        extractSubgraphs(node, CArrayElementAssignment.CT_POSITION, CArrayElementAssignment.context_names);
+        pos.pop();
+
+        pos.push(0);
+        extractSubgraphs(node, CArrayElementAssignment.CT_RIGHT, CArrayElementAssignment.context_names);
+        pos.pop();
+
+        writer.println("\""+node.getParent(0).getGraphvizName()+"\"->\""+node.getGraphvizName()+"\";");
+        super.visitCArrayElementAssignment(node);
+        return 0;
+    }
+
+    @Override
     public Integer visitCNot(CNot node) {
         System.out.println("ASTVisitableElement -> CNot");
 
@@ -457,6 +531,27 @@ public class ASTPrinterVisitor extends ASTVisitor<Integer> {
 
         writer.println("\""+node.getParent(0).getGraphvizName()+"\"->\""+node.getGraphvizName()+"\";");
         super.visitCNequal(node);
+        return 0;
+    }
+
+    @Override
+    public Integer visitCDeclarationArray(CDeclarationArray node) {
+        System.out.println("ASTVisitableElement -> CDeclarationArray");
+
+        pos.push(0);
+        extractSubgraphs(node, CDeclarationArray.CT_NAME, CDeclarationArray.context_names);
+        pos.pop();
+
+        pos.push(0);
+        extractSubgraphs(node, CDeclarationArray.CT_NUMELEMENTS, CDeclarationArray.context_names);
+        pos.pop();
+
+        pos.push(0);
+        extractSubgraphs(node, CDeclarationArray.CT_ELEMENTS, CDeclarationArray.context_names);
+        pos.pop();
+
+        writer.println("\""+node.getParent(0).getGraphvizName()+"\"->\""+node.getGraphvizName()+"\";");
+        super.visitCDeclarationArray(node);
         return 0;
     }
 

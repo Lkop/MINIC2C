@@ -204,7 +204,7 @@ class CodeIfStatement extends CodeContainer {
 class CodeWhileStatement extends CodeContainer {
     public static final int CB_WHILE_CONDITION = 0, CB_WHILE_BODY = 1;
     public static final String[] context_names = {
-        "WHILE_CONDITION", "WHILE_BODY"
+            "WHILE_CONDITION", "WHILE_BODY"
     };
 
     public CodeWhileStatement(int context) {
@@ -216,6 +216,46 @@ class CodeWhileStatement extends CodeContainer {
         CodeVisitor v = (CodeVisitor)visitor;
         if (v != null) {
             return (T) v.visitCodeWhileStatement(this);
+        }
+        return null;
+    }
+}
+
+class CodeDoWhileStatement extends CodeContainer {
+    public static final int CB_DOWHILE_BODY = 0, CB_DOWHILE_CONDITION = 1;
+    public static final String[] context_names = {
+        "DOWHILE_BODY", "DOWHILE_CONDITION"
+    };
+
+    public CodeDoWhileStatement(int context) {
+        super(CodeNodeType.CB_DOWHILESTATEMENT, "CodeDoWhileStatement", context);
+    }
+
+    @Override
+    public <T> T accept(BaseVisitor<? extends T> visitor) {
+        CodeVisitor v = (CodeVisitor)visitor;
+        if (v != null) {
+            return (T) v.visitCodeDoWhileStatement(this);
+        }
+        return null;
+    }
+}
+
+class CodeForLoopStatement extends CodeContainer {
+    public static final int CB_FORLOOP_INITIALIZATION = 0, CB_FORLOOP_CONDITION = 1, CB_FORLOOP_INCREMENT = 2, CB_FORLOOP_BODY = 3;
+    public static final String[] context_names = {
+        "FORLOOP_INITIALIZATION", "FORLOOP_CONDITION", "FORLOOP_INCREMENT", "FORLOOP_BODY"
+    };
+
+    public CodeForLoopStatement(int context) {
+        super(CodeNodeType.CB_FORLOOPSTATEMENT, "CodeForLoopStatement", context);
+    }
+
+    @Override
+    public <T> T accept(BaseVisitor<? extends T> visitor) {
+        CodeVisitor v = (CodeVisitor)visitor;
+        if (v != null) {
+            return (T) v.visitCodeForLoopStatement(this);
         }
         return null;
     }

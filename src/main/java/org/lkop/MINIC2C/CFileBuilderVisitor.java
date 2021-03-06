@@ -115,6 +115,13 @@ public class CFileBuilderVisitor extends CodeVisitor<Integer>{
             super.visit(elem);
         }
 
+        if(node.getChildrenInContext(CodeIfStatement.CB_ELSE_BODY).size() > 0) {
+            c_writer.print(addTabs(nesting_lvl)+"else");
+            for (CodeContainer elem : node.getChildrenInContext(CodeIfStatement.CB_ELSE_BODY)) {
+                super.visit(elem);
+            }
+        }
+
         return 0;
     }
 
@@ -129,6 +136,57 @@ public class CFileBuilderVisitor extends CodeVisitor<Integer>{
         c_writer.print(")");
 
         for (CodeContainer elem : node.getChildrenInContext(CodeWhileStatement.CB_WHILE_BODY)) {
+            super.visit(elem);
+        }
+
+        return 0;
+    }
+
+    @Override
+    public Integer visitCodeDoWhileStatement(CodeDoWhileStatement node) {
+        System.out.println("CodeVisitableElement -> CodeDoWhileStatement");
+
+        c_writer.print(addTabs(nesting_lvl)+"do");
+        for (CodeContainer elem : node.getChildrenInContext(CodeDoWhileStatement.CB_DOWHILE_BODY)) {
+            super.visit(elem);
+        }
+
+        c_writer.print("while(");
+        for (CodeContainer elem : node.getChildrenInContext(CodeDoWhileStatement.CB_DOWHILE_CONDITION)) {
+            super.visit(elem);
+        }
+        c_writer.print(");");
+
+        return 0;
+    }
+
+    @Override
+    public Integer visitCodeForLoopStatement(CodeForLoopStatement node) {
+        System.out.println("CodeVisitableElement -> CodeForLoopStatement");
+
+        c_writer.print(addTabs(nesting_lvl)+"for(");
+        tmp_nesting_lvl = nesting_lvl;
+        nesting_lvl = 0;
+        for (CodeContainer elem : node.getChildrenInContext(CodeForLoopStatement.CB_FORLOOP_INITIALIZATION)) {
+            super.visit(elem);
+        }
+        c_writer.print("; ");
+        nesting_lvl = tmp_nesting_lvl;
+
+        for (CodeContainer elem : node.getChildrenInContext(CodeForLoopStatement.CB_FORLOOP_CONDITION)) {
+            super.visit(elem);
+        }
+        c_writer.print("; ");
+
+        tmp_nesting_lvl = nesting_lvl;
+        nesting_lvl = 0;
+        for (CodeContainer elem : node.getChildrenInContext(CodeForLoopStatement.CB_FORLOOP_INCREMENT)) {
+            super.visit(elem);
+        }
+        nesting_lvl = tmp_nesting_lvl;
+        c_writer.print(")");
+
+        for (CodeContainer elem : node.getChildrenInContext(CodeForLoopStatement.CB_FORLOOP_BODY)) {
             super.visit(elem);
         }
 

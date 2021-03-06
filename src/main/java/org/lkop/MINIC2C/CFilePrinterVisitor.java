@@ -156,6 +156,42 @@ public class CFilePrinterVisitor extends CodeVisitor<Integer>{
     }
 
     @Override
+    public Integer visitCodeDoWhileStatement(CodeDoWhileStatement node) {
+        System.out.println("CodeVisitableElement -> CodeDoWhileStatement");
+
+        pos.push(0);
+        extractSubgraphs(node, CodeDoWhileStatement.CB_DOWHILE_BODY, CodeDoWhileStatement.context_names);
+        pos.pop();
+
+        pos.push(0);
+        extractSubgraphs(node, CodeDoWhileStatement.CB_DOWHILE_CONDITION, CodeDoWhileStatement.context_names);
+        pos.pop();
+
+        dot_writer.println("\""+node.getParent(0).getGraphvizName()+"\"->\""+node.getGraphvizName()+"\";");
+
+        super.visitCodeDoWhileStatement(node);
+        return 0;
+    }
+
+    @Override
+    public Integer visitCodeForLoopStatement(CodeForLoopStatement node) {
+        System.out.println("CodeVisitableElement -> CodeForLoopStatement");
+
+        pos.push(0);
+        extractSubgraphs(node, CodeForLoopStatement.CB_FORLOOP_CONDITION, CodeForLoopStatement.context_names);
+        pos.pop();
+
+        pos.push(0);
+        extractSubgraphs(node, CodeForLoopStatement.CB_FORLOOP_BODY, CodeForLoopStatement.context_names);
+        pos.pop();
+
+        dot_writer.println("\""+node.getParent(0).getGraphvizName()+"\"->\""+node.getGraphvizName()+"\";");
+
+        super.visitCodeForLoopStatement(node);
+        return 0;
+    }
+
+    @Override
     public Integer visitCodeCompoundStatement(CodeCompoundStatement node) {
         System.out.println("CodeVisitableElement -> CodeCompoundStatement");
 
