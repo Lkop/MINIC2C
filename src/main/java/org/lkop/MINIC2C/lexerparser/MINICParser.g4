@@ -69,7 +69,7 @@ expression : NUMBER											            #expr_NUMBER
 		   ;
 
 var_declaration : type IDENTIFIER                                       #declaration_TypeVariable
-                | IDENTIFIER LSB NUMBER RSB (ASSIGN LB args RB)?        #declaration_Array
+                | IDENTIFIER LSB (NUMBER)? RSB (ASSIGN LB args RB)?        #declaration_Array
                 | type IDENTIFIER LSB NUMBER RSB                        #declaration_TypeArray
                 ;
 

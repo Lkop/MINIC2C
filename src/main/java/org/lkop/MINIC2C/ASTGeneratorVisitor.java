@@ -629,11 +629,13 @@ public class ASTGeneratorVisitor extends MINICParserBaseVisitor<Integer> {
         parents_ctx.pop();
         parents.pop();
 
-        parents.push(new_node);
-        parents_ctx.push(CDeclarationArray.CT_NUMELEMENTS);
-        super.visit(ctx.NUMBER());
-        parents_ctx.pop();
-        parents.pop();
+        if(ctx.NUMBER() != null) {
+            parents.push(new_node);
+            parents_ctx.push(CDeclarationArray.CT_NUMELEMENTS);
+            super.visit(ctx.NUMBER());
+            parents_ctx.pop();
+            parents.pop();
+        }
 
         if (ctx.args() != null) {
             parents.push(new_node);

@@ -946,11 +946,15 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
             parents.pop();
 
             new_node.addCode("[");
-            parents.push(new_node);
-            for (ASTElement elem : node.getChildrenInContext(CDeclarationArray.CT_NUMELEMENTS)) {
-                super.visit(elem);
+            if(node.getChildrenInContext(CDeclarationArray.CT_NUMELEMENTS).size() == 0){
+                new_node.addCode(node.getChildrenInContext(CDeclarationArray.CT_ELEMENTS).size()+"");
+            }else{
+                parents.push(new_node);
+                for (ASTElement elem : node.getChildrenInContext(CDeclarationArray.CT_NUMELEMENTS)) {
+                    super.visit(elem);
+                }
+                parents.pop();
             }
-            parents.pop();
             new_node.addCode("]");
 
             if(node.getChildrenInContext(CDeclarationArray.CT_ELEMENTS).size()>0){
