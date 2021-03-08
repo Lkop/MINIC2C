@@ -923,6 +923,7 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
     @Override
     public Integer visitCDeclarationArray(CDeclarationArray node) {
         CodeContainer parent = parents.peek();
+        parent_type = "CDeclarationArray";
 
         if(parent instanceof CodeRepository) {
             for (ASTElement elem : node.getChildrenInContext(CDeclarationArray.CT_NAME)) {
@@ -950,6 +951,8 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
         }else{
             CodeRepository new_node = new CodeRepository(parents_ctx.peek());
             parent.addChild(new_node);
+
+            new_node.addCode("float ");
 
             parents.push(new_node);
             for (ASTElement elem : node.getChildrenInContext(CDeclarationArray.CT_NAME)) {
@@ -984,7 +987,10 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
                 parents.pop();
                 new_node.addCode("}");
             }
+            //code_file.declareGlobalVariable(new_node.code);
         }
+        parent_type = "";
+
         return 0;
     }
 
@@ -1021,12 +1027,12 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
         //current_compound == null --> main_function
         if(current_compound == null) {
             if(!parent_type.equals("CFunctionDefinition_name") && !parent_type.equals("CFunctionDefinition_args")
-                    && !parent_type.equals("CFunctionCall_name")) {
+                    && !parent_type.equals("CFunctionCall_name") && !parent_type.equals("CDeclarationArray")) {
                 code_file.declareGlobalVariable(node.getValue());
             }
         }else{
             if(!parent_type.equals("CFunctionDefinition_name") && !parent_type.equals("CFunctionDefinition_args")
-                    && !parent_type.equals("CFunctionCall_name") && !parent_type.equals("CIf")) {
+                    && !parent_type.equals("CFunctionCall_name") && !parent_type.equals("CIf") && !parent_type.equals("CDeclarationArray")) {
                     if (!compound_st.contains(node.getValue())) {
                         current_compound.declareVariable(node.getValue());
                         compound_st.add(node.getValue());
