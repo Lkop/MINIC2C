@@ -348,7 +348,13 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
             }
             parent_type = "CFunctionCall_args";
             parent.addCode("(");
+            boolean first_time = true;
             for (ASTElement elem : node.getChildrenInContext(CFunctionCall.CT_ARGS)) {
+                if(first_time){
+                    first_time = false;
+                }else {
+                    parent.addCode(",");
+                }
                 super.visit(elem);
             }
             parent.addCode(")");
@@ -365,7 +371,13 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
             parent_type = "CFunctionCall_args";
             new_node.addCode("(");
             parents.push(new_node);
+            boolean first_time = true;
             for (ASTElement elem : node.getChildrenInContext(CFunctionCall.CT_ARGS)) {
+                if(first_time){
+                    first_time = false;
+                }else {
+                    new_node.addCode(",");
+                }
                 super.visit(elem);
             }
             parents.pop();
