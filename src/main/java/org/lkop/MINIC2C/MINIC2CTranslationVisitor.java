@@ -11,6 +11,7 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
     private Stack<CodeContainer> parents = new Stack<>();
     private Stack<Integer> parents_ctx = new Stack<>();
     private String parent_type = "";
+    private String parent_fun = "";
     private CodeCompoundStatement current_compound = null;
     private List<String> compound_st = new ArrayList<>();
 
@@ -31,6 +32,7 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
         CodeMainFunctionDefinition fd = new CodeMainFunctionDefinition(CodeFile.CC_FILE_FUNCTIONDEFINITIONS);
         new_node.addChild(fd);
 
+        parent_fun = "CMainFunctionDefinition";
         parents.push(fd.getMainBody());
         parents_ctx.push(CodeCompoundStatement.CB_COMPOUND_BODY);
         for (ASTElement elem : node.getChildrenInContext(CCompileUnit.CT_COMPILEUNIT_STATEMENTS)) {
@@ -38,7 +40,9 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
         }
         parents_ctx.pop();
         parents.pop();
+        parent_fun = "";
 
+        parent_fun = "function";
         parents.push(new_node);
         parents_ctx.push(CodeFile.CC_FILE_FUNCTIONDEFINITIONS);
         for (ASTElement elem : node.getChildrenInContext(CCompileUnit.CT_COMPILEUNIT_FUNCTIONDEFINITIONS)) {
@@ -46,6 +50,7 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
         }
         parents_ctx.pop();
         parents.pop();
+        parent_fun = "";
 
         return 0;
     }
@@ -304,7 +309,9 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
         CodeCompoundStatement new_node = new CodeCompoundStatement(parents_ctx.peek());
         parent.addChild(new_node);
 
-        current_compound = new_node;
+        if(parent_fun.equals("function") && current_compound==null) {
+            current_compound = new_node;
+        }
 
         parents.push(new_node);
         parents_ctx.push(CodeCompoundStatement.CB_COMPOUND_BODY);
@@ -1032,14 +1039,20 @@ public class MINIC2CTranslationVisitor extends ASTVisitor<Integer>{
             }
         }else{
             if(!parent_type.equals("CFunctionDefinition_name") && !parent_type.equals("CFunctionDefinition_args")
-                    && !parent_type.equals("CFunctionCall_name") && !parent_type.equals("CIf") && !parent_type.equals("CDeclarationArray")) {
+                    && !parent_type.equals("CFunctionCall_name") && !parent_type.equals("CDeclarationArray")
+                    ) {
                     if (!compound_st.contains(node.getValue())) {
                         current_compound.declareVariable(node.getValue());
                         compound_st.add(node.getValue());
                     }
             }else{
-                if(parent_type.equals("CIf")) {
+                if(parent_fun.equals("CMainFunctionDefinition")) {
                     code_file.declareGlobalVariable(node.getValue());
+                }else{
+                    if(!parent_type.equals("CDeclarationArray") && !parent_type.equals("CFunctionCall_name")) {
+                        current_compound.declareVariable(node.getValue());
+                        compound_st.add(node.getValue());
+                    }
                 }
             }
         }
